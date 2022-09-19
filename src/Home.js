@@ -17,7 +17,7 @@ export function Home() {
     );
   return (
     <div>
-      <h2>This is the home page!</h2>
+      <h2>Please connect your wallet to access the application!</h2>
       <button onClick={() => connect()}>Connect Wallet</button>
     </div>
   );
