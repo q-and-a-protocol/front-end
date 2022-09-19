@@ -4,12 +4,11 @@ import {
   Route,
   Link as RouterLink,
   useMatch,
-  createBrowserRouter,
-  RouterProvider,
 } from 'react-router-dom';
 import { WagmiConfig, createClient } from 'wagmi';
 import { getDefaultProvider } from 'ethers';
 
+import { Header } from './Header';
 import { Home } from './Home';
 import { MyQuestions } from './MyQuestions';
 import { MyAnswers } from './MyAnswers';
@@ -22,12 +21,29 @@ const client = createClient({
   provider: getDefaultProvider(),
 });
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <div>Hello world!</div>,
-  },
-]);
+function NavLink(props) {
+  const match = useMatch(props.to);
+  // TODO: IF match give different colour to the below element!
+  return <RouterLink {...props} />;
+}
+
+function Nav() {
+  return (
+    <nav>
+      <ul>
+        <li>
+          <NavLink to='/'>Home</NavLink>
+        </li>
+        <li>
+          <NavLink to='/myquestions'>My Questions</NavLink>
+        </li>
+        <li>
+          <NavLink to='/myanswers'>My Answers</NavLink>
+        </li>
+      </ul>
+    </nav>
+  );
+}
 
 function AppRoutes() {
   return (
@@ -45,7 +61,8 @@ function App() {
   return (
     <Router>
       <WagmiConfig client={client}>
-        <h1>Question and Answer</h1>
+        <Header />
+        <Nav />
         <AppRoutes />
       </WagmiConfig>
     </Router>
