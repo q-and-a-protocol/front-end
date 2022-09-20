@@ -13,6 +13,7 @@ import { Home } from './Home';
 import { MyQuestions } from './MyQuestions';
 import { MyAnswers } from './MyAnswers';
 import { NotFoundScreen } from './NotFoundScreen';
+import { Utilities } from './Utilities';
 
 import './App.css';
 
@@ -52,6 +53,7 @@ function AppRoutes() {
       <Route path='/myquestions' element={<MyQuestions />} />
       <Route path='/myanswers' element={<MyAnswers />} />
       {/* <Route path='/book/:bookId' element={<BookScreen user={user} />} /> */}
+      <Route path='/utilities' element={<Utilities />} />
       <Route path='*' element={<NotFoundScreen />} />
     </Routes>
   );
