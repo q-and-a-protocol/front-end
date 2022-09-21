@@ -10,7 +10,7 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 import { abi } from './contractInformation/ExampleERC20-abi';
 
 export function Utilities() {
-  // QuestionAndAnswer: 0x654eF26a03A51800D951ef8d51362ba2c329946D
+  // QuestionAndAnswer: 0x64d5c6907df12BD636c44771C446eD4e581D3824
   // ExampleERC20: 0xd77cffca19aec21aca9f0e38743740efd548b2a4
   const { config } = usePrepareContractWrite({
     addressOrName: '0xd77cffca19aec21aca9f0e38743740efd548b2a4',

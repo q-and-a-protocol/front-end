@@ -30,6 +30,7 @@ export function Header() {
     connector: new InjectedConnector(),
   });
   const { disconnect } = useDisconnect();
+  const connectBGColor = isConnected ? 'bg-rose-400' : 'bg-indigo-600';
 
   function toggleWallet() {
     if (isConnected) {
@@ -73,7 +74,7 @@ export function Header() {
           <div className='hidden items-center justify-end md:flex md:flex-1 lg:w-0'>
             <a
               href='#'
-              className='ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700'
+              className={`ml-8 inline-flex items-center justify-center whitespace-nowrap ${connectBGColor} rounded-md border border-transparent  px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700`}
               onClick={() => toggleWallet()}
             >
               {isConnected ? 'Disconnect' : 'Connect Wallet'}

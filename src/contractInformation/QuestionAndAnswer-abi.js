@@ -219,9 +219,25 @@ export const abi = [
         type: 'uint256',
       },
     ],
-    name: 'printQuestionerToAnswererToQAs',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    name: 'getQuestionerToAnswererToQAs',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
