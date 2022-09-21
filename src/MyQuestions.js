@@ -1,4 +1,5 @@
-import { useContract, useProvider } from 'wagmi';
+import { useEffect } from 'react';
+import { useContract, useProvider, useContractRead } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { abi } from './contractInformation/QuestionAndAnswer-abi';
 
@@ -13,6 +14,16 @@ export function MyQuestions() {
     contractInterface: abi,
     signerOrProvider: provider,
   });
+
+  const { data } = useContractRead({
+    addressOrName: '0x654eF26a03A51800D951ef8d51362ba2c329946D',
+    contractInterface: abi,
+    functionName: 'version',
+  });
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   async function version() {
     const result = await contract.version();
