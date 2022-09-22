@@ -12,8 +12,8 @@ export function Home() {
       <div className='px-4 py-5 sm:p-6 '>
         <form className='mt-5 sm:flex justify-center'>
           <div className='w-2/3'>
-            <label htmlFor='email' className='sr-only'>
-              Email
+            <label htmlFor='address' className='sr-only'>
+              Address
             </label>
             <input
               value={inputAddress}

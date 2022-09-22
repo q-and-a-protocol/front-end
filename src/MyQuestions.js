@@ -4,31 +4,16 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 import { abi } from './contractInformation/QuestionAndAnswer-abi';
 
 export function MyQuestions() {
-  // QuestionAndAnswer: 0x64d5c6907df12BD636c44771C446eD4e581D3824
+  // QuestionAndAnswer: 0x81E67Da7c1E74318f4070380F6323adF3cE54931
   // ExampleERC20: 0xd77cffca19aec21aca9f0e38743740efd548b2a4
 
   const provider = useProvider();
 
   const contract = useContract({
-    addressOrName: '0x64d5c6907df12BD636c44771C446eD4e581D3824',
+    addressOrName: '0x81E67Da7c1E74318f4070380F6323adF3cE54931',
     contractInterface: abi,
     signerOrProvider: provider,
   });
-
-  // const { data } = useContractRead({
-  //   addressOrName: '0x64d5c6907df12BD636c44771C446eD4e581D3824',
-  //   contractInterface: abi,
-  //   functionName: 'version',
-  // });
-
-  // useEffect(() => {
-  //   console.log(data);
-  // }, [data]);
-
-  // async function version() {
-  //   const result = await contract.version();
-  //   console.log(result);
-  // }
 
   async function callFunction() {
     const result = await contract.getQuestionerToAnswererToQAs(
@@ -42,8 +27,25 @@ export function MyQuestions() {
   return (
     <div>
       <h2>This is the MyQuestions page!</h2>
-      {/* <button onClick={() => version()}>Version</button> */}
+
       <button onClick={() => callFunction()}>callFunction</button>
     </div>
   );
 }
+
+// const { data } = useContractRead({
+//   addressOrName: '0x81E67Da7c1E74318f4070380F6323adF3cE54931',
+//   contractInterface: abi,
+//   functionName: 'version',
+// });
+
+// useEffect(() => {
+//   console.log(data);
+// }, [data]);
+
+// async function version() {
+//   const result = await contract.version();
+//   console.log(result);
+// }
+
+/* <button onClick={() => version()}>Version</button> */

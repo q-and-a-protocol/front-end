@@ -16,6 +16,16 @@ export const abi = [
   },
   {
     inputs: [],
+    name: 'QuestionAndAnswer__NothingToWithdraw',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'QuestionAndAnswer__QuestionAlreadyAnswered',
+    type: 'error',
+  },
+  {
+    inputs: [],
     name: 'QuestionAndAnswer__QuestionDoesNotExist',
     type: 'error',
   },
@@ -132,6 +142,25 @@ export const abi = [
     type: 'event',
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'withdrawalBy',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'Withdraw',
+    type: 'event',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -174,8 +203,20 @@ export const abi = [
         name: 'priceMinimum',
         type: 'uint256',
       },
+      {
+        internalType: 'uint256',
+        name: 'withdrawableAmount',
+        type: 'uint256',
+      },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'answererWithdraw',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -232,6 +273,16 @@ export const abi = [
         type: 'string',
       },
       {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+      {
         internalType: 'uint256',
         name: '',
         type: 'uint256',
@@ -248,22 +299,9 @@ export const abi = [
         type: 'uint256',
       },
     ],
-    name: 'setAnswererSettings',
+    name: 'setAnswererSettingsPriceMinimum',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'version',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'pure',
     type: 'function',
   },
 ];
