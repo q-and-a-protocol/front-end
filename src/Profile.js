@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useContractWrite, usePrepareContractWrite, useEnsName, useContractRead } from 'wagmi';
 import { abi } from './contractInformation/QuestionAndAnswer-abi';
+import * as ethers from 'ethers';
 
 export function Profile() {
   // QuestionAndAnswer: 0x81E67Da7c1E74318f4070380F6323adF3cE54931
@@ -11,7 +12,8 @@ export function Profile() {
   const { address } = useParams();
   const { data: ensName } = useEnsName();
   const [question, setQuestion] = useState('');
-  const [bounty, setBounty] = useState(25);
+  const [bounty, setBounty] = useState(5);
+  const [recommendedBounty, setRecommendedBounty] = useState(5);
 
   const { data, write } = useContractWrite({
     mode: 'recklesslyUnprepared',
@@ -23,7 +25,9 @@ export function Profile() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    write?.();
+    write?.({
+      recklesslySetUnpreparedArgs: [question, address, ethers.utils.parseUnits(bounty).toString()],
+    });
   }
 
   function formatAddress(address) {
@@ -39,7 +43,8 @@ export function Profile() {
   });
 
   useEffect(() => {
-    console.log(newData);
+    const formatted = Number(ethers.utils.formatEther(newData.priceMinimum.toString()));
+    setRecommendedBounty(formatted);
   }, [newData]);
 
   return (
@@ -57,6 +62,13 @@ export function Profile() {
             <p className='mt-1 text-sm text-gray-600'>
               Here are some guidelines {formatAddress(address)} has set, follow them to get your
               question answered!
+            </p>
+            <p className='mt-5 text-md text-gray-600'>
+              {recommendedBounty === 0
+                ? `${formatAddress(
+                    address
+                  )} has not set a minimum price! We'd recommend at least $5 to be safe.`
+                : `Minimum Price: $${recommendedBounty}`}
             </p>
           </div>
         </div>
@@ -87,24 +99,23 @@ export function Profile() {
               </div>
             </div>
 
-            <div className='grid grid-cols-3 gap-6'>
+            <div className='grid gap-6'>
               <div className='col-span-1'>
-                <label
-                  htmlFor='company-website'
-                  className='block text-sm font-medium text-gray-700'
-                >
+                <label htmlFor='bounty' className='block text-sm font-medium text-gray-700'>
                   Price
                 </label>
-                <div className='mt-1 flex rounded-md shadow-sm'>
+                <div className='mt-1 w-1/3 flex rounded-md shadow-sm'>
                   <span className='inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500'>
                     $
                   </span>
                   <input
                     type='number'
-                    name='company-website'
-                    id='company-website'
+                    name='bounty'
+                    id='bounty'
+                    value={bounty}
+                    onChange={(e) => setBounty(e.target.value)}
                     className='block flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-md'
-                    placeholder='25'
+                    placeholder='5'
                   />
                 </div>
                 <p className='mt-2 text-sm text-gray-500'>
