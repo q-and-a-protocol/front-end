@@ -1,4 +1,4 @@
-# Resources
+# Overview
 
 This application consists of 3 Github repositories:
 
