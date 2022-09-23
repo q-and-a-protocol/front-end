@@ -3,14 +3,14 @@ import { useContract, useProvider, useContractRead } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { abi } from './contractInformation/QuestionAndAnswer-abi';
 
-export function MyQuestions() {
-  // QuestionAndAnswer: 0x81E67Da7c1E74318f4070380F6323adF3cE54931
-  // ExampleERC20: 0xd77cffca19aec21aca9f0e38743740efd548b2a4
+const questionAndAnswerAddress = process.env.REACT_APP_QUESTION_AND_ANSWER_ADDRESS;
+const exampleERC20Address = process.env.REACT_APP_EXAMPLE_ERC20_ADDRESS;
 
+export function MyQuestions() {
   const provider = useProvider();
 
   const contract = useContract({
-    addressOrName: '0x81E67Da7c1E74318f4070380F6323adF3cE54931',
+    addressOrName: questionAndAnswerAddress,
     contractInterface: abi,
     signerOrProvider: provider,
   });
@@ -34,7 +34,7 @@ export function MyQuestions() {
 }
 
 // const { data } = useContractRead({
-//   addressOrName: '0x81E67Da7c1E74318f4070380F6323adF3cE54931',
+//   addressOrName: questionAndAnswerAddress,
 //   contractInterface: abi,
 //   functionName: 'version',
 // });

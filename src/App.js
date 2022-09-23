@@ -8,6 +8,7 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { getDefaultProvider } from 'ethers';
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 
 import { Header } from './Header';
 import { Home } from './Home';
@@ -19,6 +20,11 @@ import { NotFoundScreen } from './NotFoundScreen';
 import { Utilities } from './Utilities';
 
 import './App.css';
+
+const apolloClient = new ApolloClient({
+  cache: new InMemoryCache(),
+  uri: process.env.REACT_APP_THE_GRAPH_HTTP,
+});
 
 const { chains, provider, webSocketProvider } = configureChains(allChains, [
   alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_API_KEY }),
@@ -70,10 +76,12 @@ function AppRoutes() {
 function App() {
   return (
     <WagmiConfig client={client}>
-      <Router>
-        <Header />
-        <AppRoutes />
-      </Router>
+      <ApolloProvider client={apolloClient}>
+        <Router>
+          <Header />
+          <AppRoutes />
+        </Router>
+      </ApolloProvider>
     </WagmiConfig>
   );
 }

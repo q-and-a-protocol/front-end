@@ -6,8 +6,8 @@ import { abi } from './contractInformation/QuestionAndAnswer-abi';
 import * as ethers from 'ethers';
 
 export function Profile() {
-  // QuestionAndAnswer: 0x81E67Da7c1E74318f4070380F6323adF3cE54931
-  // ExampleERC20: 0xd77cffca19aec21aca9f0e38743740efd548b2a4
+  const questionAndAnswerAddress = process.env.REACT_APP_QUESTION_AND_ANSWER_ADDRESS;
+  const exampleERC20Address = process.env.REACT_APP_EXAMPLE_ERC20_ADDRESS;
 
   const { address } = useParams();
   const { data: ensName } = useEnsName();
@@ -17,7 +17,7 @@ export function Profile() {
 
   const { data, write } = useContractWrite({
     mode: 'recklesslyUnprepared',
-    addressOrName: '0x81E67Da7c1E74318f4070380F6323adF3cE54931',
+    addressOrName: questionAndAnswerAddress,
     contractInterface: abi,
     functionName: 'askQuestion',
     args: [question, address, bounty],
@@ -36,15 +36,18 @@ export function Profile() {
   }
 
   const { data: newData } = useContractRead({
-    addressOrName: '0x81E67Da7c1E74318f4070380F6323adF3cE54931',
+    addressOrName: questionAndAnswerAddress,
     contractInterface: abi,
     functionName: 'answererToSettings',
     args: [address],
   });
 
   useEffect(() => {
-    const formatted = Number(ethers.utils.formatEther(newData.priceMinimum.toString()));
-    setRecommendedBounty(formatted);
+    if (newData) {
+      const formatted = Number(ethers.utils.formatEther(newData.priceMinimum.toString()));
+      setRecommendedBounty(formatted);
+      setBounty(formatted);
+    }
   }, [newData]);
 
   return (
@@ -63,7 +66,7 @@ export function Profile() {
               Here are some guidelines {formatAddress(address)} has set, follow them to get your
               question answered!
             </p>
-            <p className='mt-5 text-md text-gray-600'>
+            <p className='mt-5 text-md text-rose-500'>
               {recommendedBounty === 0
                 ? `${formatAddress(
                     address

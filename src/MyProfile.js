@@ -3,6 +3,9 @@ import { useAccount, useContractWrite, useContractRead } from 'wagmi';
 import { abi } from './contractInformation/QuestionAndAnswer-abi';
 import * as ethers from 'ethers';
 
+const questionAndAnswerAddress = process.env.REACT_APP_QUESTION_AND_ANSWER_ADDRESS;
+const exampleERC20Address = process.env.REACT_APP_EXAMPLE_ERC20_ADDRESS;
+
 export function MyProfile() {
   const { address } = useAccount();
   const [bounty, setBounty] = useState(0);
@@ -13,7 +16,7 @@ export function MyProfile() {
 
   const { data, write } = useContractWrite({
     mode: 'recklesslyUnprepared',
-    addressOrName: '0x81E67Da7c1E74318f4070380F6323adF3cE54931',
+    addressOrName: questionAndAnswerAddress,
     contractInterface: abi,
     functionName: 'setAnswererSettingsPriceMinimum',
   });
@@ -26,14 +29,16 @@ export function MyProfile() {
   }
 
   const { data: newData } = useContractRead({
-    addressOrName: '0x81E67Da7c1E74318f4070380F6323adF3cE54931',
+    addressOrName: questionAndAnswerAddress,
     contractInterface: abi,
     functionName: 'answererToSettings',
     args: [address],
   });
 
   useEffect(() => {
-    setBounty(ethers.utils.formatEther(newData.priceMinimum.toString()));
+    if (newData) {
+      setBounty(ethers.utils.formatEther(newData.priceMinimum.toString()));
+    }
   }, [newData]);
 
   return (
