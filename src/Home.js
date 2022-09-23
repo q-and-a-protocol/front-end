@@ -20,6 +20,8 @@ const GET_ALL_QUESTIONS = gql`
       answerer
       questionId
       bounty
+      date
+      answered
     }
   }
 `;
@@ -98,22 +100,26 @@ export function Home() {
     if (!data) setTimeline([]);
     else if (!data.newsfeedEvents) setTimeline([]);
     else {
-      console.log(data.newsfeedEvents);
       setTimeline(
-        data?.newsfeedEvents?.map((e) => {
-          return {
-            id: e.id,
-            source: e.questioner,
-            content: `asked a question to`,
-            target: e.answerer,
-            to: '/profile/',
-            date: 'Sep 20',
-            datetime: '2020-09-20',
-            icon: ChatBubbleLeftRightIcon,
-            iconBackground: 'bg-indigo-600',
-            bounty: e.bounty,
-          };
-        })
+        data?.newsfeedEvents
+          ?.slice()
+          .sort((a, b) => b.date - a.date)
+          .map((e) => {
+            const date = new Date(e.date * 1000);
+            const hours = date.getHours() % 12;
+            const minutes = date.getMinutes() + (date.getHours() > 12 ? 'pm' : 'am');
+            return {
+              id: e.id,
+              source: e.questioner,
+              content: `asked a question to`,
+              target: e.answerer,
+              to: '/profile/',
+              date: `${hours}:${minutes}`,
+              icon: ChatBubbleLeftRightIcon,
+              iconBackground: 'bg-indigo-600',
+              bounty: e.bounty,
+            };
+          })
       );
     }
   }, [data]);
@@ -189,7 +195,7 @@ export function Home() {
                         <div className='text-green-600'>
                           ${Number(ethers.utils.formatUnits(event.bounty).toString())}
                         </div>
-                        <time dateTime={event.datetime}>{event.date}</time>
+                        <time>{event.date}</time>
                       </div>
                     </div>
                   </div>
