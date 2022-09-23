@@ -5,12 +5,7 @@ import { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { useEffect } from 'react';
 import * as ethers from 'ethers';
-import {
-  CheckIcon,
-  HandThumbUpIcon,
-  UserIcon,
-  ChatBubbleLeftRightIcon,
-} from '@heroicons/react/20/solid';
+import { CheckIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/20/solid';
 
 const GET_ALL_QUESTIONS = gql`
   {
@@ -26,59 +21,6 @@ const GET_ALL_QUESTIONS = gql`
   }
 `;
 
-// const timeline = [
-//   {
-//     id: 1,
-//     content: 'Applied to',
-//     target: 'Front End Developer',
-//     href: '#',
-//     date: 'Sep 20',
-//     datetime: '2020-09-20',
-//     icon: UserIcon,
-//     iconBackground: 'bg-gray-400',
-//   },
-//   {
-//     id: 2,
-//     content: 'Advanced to phone screening by',
-//     target: 'Bethany Blake',
-//     href: '#',
-//     date: 'Sep 22',
-//     datetime: '2020-09-22',
-//     icon: HandThumbUpIcon,
-//     iconBackground: 'bg-blue-500',
-//   },
-//   {
-//     id: 3,
-//     content: 'Completed phone screening with',
-//     target: 'Martha Gardner',
-//     href: '#',
-//     date: 'Sep 28',
-//     datetime: '2020-09-28',
-//     icon: CheckIcon,
-//     iconBackground: 'bg-green-500',
-//   },
-//   {
-//     id: 4,
-//     content: 'Advanced to interview by',
-//     target: 'Bethany Blake',
-//     href: '#',
-//     date: 'Sep 30',
-//     datetime: '2020-09-30',
-//     icon: HandThumbUpIcon,
-//     iconBackground: 'bg-blue-500',
-//   },
-//   {
-//     id: 5,
-//     content: 'Completed interview with',
-//     target: 'Katherine Snyder',
-//     href: '#',
-//     date: 'Oct 4',
-//     datetime: '2020-10-04',
-//     icon: CheckIcon,
-//     iconBackground: 'bg-green-500',
-//   },
-// ];
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
@@ -86,10 +28,14 @@ function classNames(...classes) {
 export function Home() {
   const { address, isConnected } = useAccount();
   const [inputAddress, setInputAddress] = useState('');
-  const { loading, error, data } = useQuery(GET_ALL_QUESTIONS);
+  const { loading, error, data } = useQuery(GET_ALL_QUESTIONS, {
+    pollInterval: 1000,
+  });
   const { data: ensName } = useEnsName();
 
   const [timeline, setTimeline] = useState([]);
+
+  const newsfeedEvents = data?.newsfeedEvents;
 
   function formatAddress(address) {
     const formattedAddress = address.slice(0, 6) + '...' + address.slice(-4);
@@ -115,7 +61,7 @@ export function Home() {
               target: e.answerer,
               to: '/profile/',
               date: `${hours}:${minutes}`,
-              icon: ChatBubbleLeftRightIcon,
+              icon: e.answered ? CheckIcon : ChatBubbleLeftRightIcon,
               iconBackground: 'bg-indigo-600',
               bounty: e.bounty,
             };

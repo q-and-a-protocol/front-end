@@ -68,7 +68,7 @@ export function MyProfile() {
                           $
                         </span>
                         <input
-                          value={bounty}
+                          value={Number(bounty)}
                           onChange={updateBounty}
                           type='number'
                           name='company-website'

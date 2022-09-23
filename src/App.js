@@ -18,6 +18,7 @@ import { Profile } from './Profile';
 import { MyProfile } from './MyProfile';
 import { NotFoundScreen } from './NotFoundScreen';
 import { Utilities } from './Utilities';
+import { Question } from './Question';
 
 import './App.css';
 
@@ -68,6 +69,7 @@ function AppRoutes() {
       <Route path='/profile/:address' element={<Profile />} />
       <Route path='/myprofile' element={<MyProfile />} />
       <Route path='/utilities' element={<Utilities />} />
+      <Route path='/question/:id' element={<Question />} />
       <Route path='*' element={<NotFoundScreen />} />
     </Routes>
   );

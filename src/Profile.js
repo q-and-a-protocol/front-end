@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useContractWrite, usePrepareContractWrite, useEnsName, useContractRead } from 'wagmi';
-import { abi } from './contractInformation/QuestionAndAnswer-abi';
+import { abi as QuestionAndAnswerABI } from './contractInformation/QuestionAndAnswer-abi';
+import { abi as ExampleERC20ABI } from './contractInformation/ExampleERC20-abi';
 import * as ethers from 'ethers';
 
 export function Profile() {
@@ -15,10 +16,10 @@ export function Profile() {
   const [bounty, setBounty] = useState(5);
   const [recommendedBounty, setRecommendedBounty] = useState(5);
 
-  const { data, write } = useContractWrite({
+  const { write } = useContractWrite({
     mode: 'recklesslyUnprepared',
     addressOrName: questionAndAnswerAddress,
-    contractInterface: abi,
+    contractInterface: QuestionAndAnswerABI,
     functionName: 'askQuestion',
     args: [question, address, bounty],
   });
@@ -37,7 +38,7 @@ export function Profile() {
 
   const { data: newData } = useContractRead({
     addressOrName: questionAndAnswerAddress,
-    contractInterface: abi,
+    contractInterface: QuestionAndAnswerABI,
     functionName: 'answererToSettings',
     args: [address],
   });
@@ -49,6 +50,30 @@ export function Profile() {
       setBounty(formatted);
     }
   }, [newData]);
+
+  const { write: approveFunds } = useContractWrite({
+    mode: 'recklesslyUnprepared',
+    addressOrName: exampleERC20Address,
+    contractInterface: ExampleERC20ABI,
+    functionName: 'increaseAllowance',
+    args: [questionAndAnswerAddress, bounty],
+  });
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    write?.({
+      recklesslySetUnpreparedArgs: [question, address, ethers.utils.parseUnits(bounty).toString()],
+    });
+  }
+
+  function handleApprovePrice() {
+    approveFunds?.({
+      recklesslySetUnpreparedArgs: [
+        questionAndAnswerAddress,
+        ethers.utils.parseUnits(bounty).toString(),
+      ],
+    });
+  }
 
   return (
     <div className='mx-auto max-w-7xl px-4 pt-4'>
@@ -129,6 +154,13 @@ export function Profile() {
 
             <div className='pt-5'>
               <div className='flex justify-end'>
+                <button
+                  type='button'
+                  onClick={handleApprovePrice}
+                  className='ml-3 inline-flex justify-center rounded-md border border-transparent bg-rose-400 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                >
+                  Approve Price
+                </button>
                 <button
                   type='submit'
                   className='ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
