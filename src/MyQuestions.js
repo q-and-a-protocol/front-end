@@ -62,12 +62,15 @@ export function MyQuestions() {
           ?.slice()
           .sort((a, b) => b.date - a.date)
           .map((e) => {
+            console.log(e);
             const date = new Date(e.date * 1000);
             const hours = date.getHours() % 12;
             const minutes = date.getMinutes() + (date.getHours() > 12 ? 'pm' : 'am');
             return {
               id: e.id,
               source: e.questioner,
+              target: e.answerer,
+              index: e.questionId,
               content: `asked you a question:`,
               question: e.question,
               to: '/question/',
@@ -87,7 +90,10 @@ export function MyQuestions() {
         <div className='flow-root mt-10 w-5/6 mx-auto'>
           <ul role='list' className='-mb-8'>
             {questionsFeed.map((event, eventIdx) => (
-              <RouterLink to={event.to + event.id} key={event.id}>
+              <RouterLink
+                to={event.to + event.source + '/' + event.target + '/' + event.index}
+                key={event.id}
+              >
                 <li>
                   <div className='relative pb-8'>
                     {eventIdx !== questionsFeed.length - 1 ? (

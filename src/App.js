@@ -66,10 +66,10 @@ function AppRoutes() {
       <Route path='/' element={<Home />} />
       <Route path='/myquestions' element={<MyQuestions />} />
       <Route path='/myanswers' element={<MyAnswers />} />
-      <Route path='/profile/:address' element={<Profile />} />
+      <Route path='/profile/' element={<Profile />} />
       <Route path='/myprofile' element={<MyProfile />} />
       <Route path='/utilities' element={<Utilities />} />
-      <Route path='/question/:id' element={<Question />} />
+      <Route path='/question/:questioner/:answerer/:index' element={<Question />} />
       <Route path='*' element={<NotFoundScreen />} />
     </Routes>
   );
