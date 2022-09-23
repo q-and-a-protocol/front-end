@@ -26,7 +26,7 @@ export function MyQuestions() {
 
   const GET_MY_QUESTIONS = gql`
     query GetMyQuestions($address: Bytes!) {
-      questionAskeds(first: 20, where: { questioner: $address }) {
+      newsfeedEvents(first: 20, where: { answerer: $address }) {
         id
         questioner
         answerer
@@ -34,6 +34,7 @@ export function MyQuestions() {
         bounty
         date
         question
+        answer
       }
     }
   `;
@@ -42,27 +43,17 @@ export function MyQuestions() {
     variables: { address },
   });
 
-  // useEffect(() => {
-  //   console.log(address);
-  //   console.log(myQuestions);
-  //   if (myQuestions?.questionAskeds) {
-  //     console.log(myQuestions.questionAskeds);
-  //   }
-  // }, [myQuestions, address]);
-
   const [questionsFeed, setQuestionsFeed] = useState([]);
 
   useEffect(() => {
-    console.log(myQuestions);
     if (!myQuestions) setQuestionsFeed([]);
-    else if (!myQuestions.questionAskeds) setQuestionsFeed([]);
+    else if (!myQuestions.newsfeedEvents) setQuestionsFeed([]);
     else {
       setQuestionsFeed(
-        myQuestions?.questionAskeds
+        myQuestions?.newsfeedEvents
           ?.slice()
           .sort((a, b) => b.date - a.date)
           .map((e) => {
-            console.log(e);
             const date = new Date(e.date * 1000);
             const hours = date.getHours() % 12;
             const minutes = date.getMinutes() + (date.getHours() > 12 ? 'pm' : 'am');
@@ -75,7 +66,7 @@ export function MyQuestions() {
               question: e.question,
               to: '/question/',
               date: `${hours}:${minutes}`,
-              icon: ChatBubbleLeftRightIcon,
+              icon: e.answered ? CheckIcon : ChatBubbleLeftRightIcon,
               iconBackground: 'bg-indigo-600',
               bounty: e.bounty,
             };
@@ -88,54 +79,58 @@ export function MyQuestions() {
     <div className='bg-white sm:rounded-lg '>
       <div className='px-4 py-5 sm:p-6 '>
         <div className='flow-root mt-10 w-5/6 mx-auto'>
-          <ul role='list' className='-mb-8'>
-            {questionsFeed.map((event, eventIdx) => (
-              <RouterLink
-                to={event.to + event.source + '/' + event.target + '/' + event.index}
-                key={event.id}
-              >
-                <li>
-                  <div className='relative pb-8'>
-                    {eventIdx !== questionsFeed.length - 1 ? (
-                      <span
-                        className='absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200'
-                        aria-hidden='true'
-                      />
-                    ) : null}
-                    <div className='relative flex space-x-3'>
-                      <div>
+          {questionsFeed.length === 0 ? (
+            <div>You haven't been asked a question yet!</div>
+          ) : (
+            <ul role='list' className='-mb-8'>
+              {questionsFeed.map((event, eventIdx) => (
+                <RouterLink
+                  to={event.to + event.source + '/' + event.target + '/' + event.index}
+                  key={event.id}
+                >
+                  <li>
+                    <div className='relative pb-8'>
+                      {eventIdx !== questionsFeed.length - 1 ? (
                         <span
-                          className={classNames(
-                            event.iconBackground,
-                            'h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white'
-                          )}
-                        >
-                          <event.icon className='h-5 w-5 text-white' aria-hidden='true' />
-                        </span>
-                      </div>
-                      <div className='flex min-w-0 flex-1 justify-between space-x-4 pt-1.5'>
+                          className='absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200'
+                          aria-hidden='true'
+                        />
+                      ) : null}
+                      <div className='relative flex space-x-3'>
                         <div>
-                          <p className='text-sm text-gray-500'>
-                            <span className='font-medium text-gray-900 pr-2'>
-                              {formatAddress(event.source)}
-                            </span>
-                            {event.content}
-                          </p>
-                          <p className='text-md text-gray-800 my-3'>{event.question}</p>
+                          <span
+                            className={classNames(
+                              event.iconBackground,
+                              'h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white'
+                            )}
+                          >
+                            <event.icon className='h-5 w-5 text-white' aria-hidden='true' />
+                          </span>
                         </div>
-                        <div className='whitespace-nowrap text-right text-sm text-gray-500'>
-                          <div className='text-green-600'>
-                            ${Number(ethers.utils.formatUnits(event.bounty).toString())}
+                        <div className='flex min-w-0 flex-1 justify-between space-x-4 pt-1.5'>
+                          <div>
+                            <p className='text-sm text-gray-500'>
+                              <span className='font-medium text-gray-900 pr-2'>
+                                {formatAddress(event.source)}
+                              </span>
+                              {event.content}
+                            </p>
+                            <p className='text-md text-gray-800 my-3'>{event.question}</p>
                           </div>
-                          <time>{event.date}</time>
+                          <div className='whitespace-nowrap text-right text-sm text-gray-500'>
+                            <div className='text-green-600'>
+                              ${Number(ethers.utils.formatUnits(event.bounty).toString())}
+                            </div>
+                            <time>{event.date}</time>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </li>
-              </RouterLink>
-            ))}
-          </ul>
+                  </li>
+                </RouterLink>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>
