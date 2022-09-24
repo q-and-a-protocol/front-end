@@ -25,12 +25,21 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
+const isToday = (someDate) => {
+  const today = new Date();
+  return (
+    someDate.getDate() == today.getDate() &&
+    someDate.getMonth() == today.getMonth() &&
+    someDate.getFullYear() == today.getFullYear()
+  );
+};
+
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 export function Home() {
   const { address, isConnected } = useAccount();
   const [inputAddress, setInputAddress] = useState('');
-  const { loading, error, data } = useQuery(GET_ALL_QUESTIONS, {
-    pollInterval: 1000,
-  });
+  const { loading, error, data } = useQuery(GET_ALL_QUESTIONS);
   const { data: ensName } = useEnsName();
 
   const [timeline, setTimeline] = useState([]);
@@ -52,17 +61,21 @@ export function Home() {
           .sort((a, b) => b.date - a.date)
           .map((e) => {
             const date = new Date(e.date * 1000);
-            const hours = date.getHours() % 12;
-            const minutes = date.getMinutes() + (date.getHours() > 12 ? 'pm' : 'am');
+            const time = date.toLocaleString('en-US', {
+              hour: 'numeric',
+              hour12: true,
+              minute: 'numeric',
+            });
+            const getExtraDate = months[date.getMonth()] + ' ' + date.getDate() + ' ';
             return {
               id: e.id,
               source: e.questioner,
               content: `asked a question to`,
               target: e.answerer,
               to: '/profile/',
-              date: `${hours}:${minutes}`,
+              date: !isToday(date) ? getExtraDate + time : time,
               icon: e.answered ? CheckIcon : ChatBubbleLeftRightIcon,
-              iconBackground: 'bg-indigo-600',
+              iconBackground: e.answered ? 'bg-green-600' : 'bg-indigo-600',
               bounty: e.bounty,
             };
           })
@@ -97,7 +110,7 @@ export function Home() {
             </button>
           </RouterLink>
         </form>
-        <div className='flow-root mt-10 w-5/6 mx-auto'>
+        <div className='flow-root mt-10 w-4/6 mx-auto'>
           <ul role='list' className='-mb-8'>
             {timeline.map((event, eventIdx) => (
               <li key={event.id}>

@@ -9,6 +9,7 @@ const exampleERC20Address = process.env.REACT_APP_EXAMPLE_ERC20_ADDRESS;
 export function MyProfile() {
   const { address } = useAccount();
   const [bounty, setBounty] = useState(0);
+  const [interests, setInterests] = useState();
 
   function updateBounty(e) {
     setBounty(e.target.value);
@@ -55,7 +56,7 @@ export function MyProfile() {
             <form onSubmit={handleSubmit}>
               <div className='shadow sm:overflow-hidden sm:rounded-md'>
                 <div className='space-y-6 bg-white px-4 py-5 sm:p-6'>
-                  <div className='grid grid-cols-3 gap-6'>
+                  <div className='grid grid-cols-3'>
                     <div className='col-span-1'>
                       <label
                         htmlFor='company-website'
@@ -77,52 +78,30 @@ export function MyProfile() {
                           placeholder='25'
                         />
                       </div>
-                      <p className='mt-2 text-sm text-gray-500'>
-                        Set a minimum price you'd like the questioner to pay.
-                      </p>
                     </div>
+                    <p className='mt-2 col-span-3 text-sm text-gray-500'>
+                      Set a minimum price you'd like the questioner to pay.
+                    </p>
                   </div>
-                  {/* <div className='grid grid-cols-3 gap-6'>
-                    <div className='col-span-3 sm:col-span-2'>
-                      <label
-                        htmlFor='company-website'
-                        className='block text-sm font-medium text-gray-700'
-                      >
-                        Website
-                      </label>
-                      <div className='mt-1 flex rounded-md shadow-sm'>
-                        <span className='inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500'>
-                          http://
-                        </span>
-                        <input
-                          type='text'
-                          name='company-website'
-                          id='company-website'
-                          className='block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                          placeholder='www.example.com'
-                        />
-                      </div>
-                    </div>
-                  </div>
-
                   <div>
-                    <label htmlFor='about' className='block text-sm font-medium text-gray-700'>
-                      About
+                    <label htmlFor='interests' className='block text-sm font-medium text-gray-700'>
+                      Interests
                     </label>
                     <div className='mt-1'>
                       <textarea
-                        id='about'
-                        name='about'
+                        id='interests'
+                        name='interests'
+                        value={interests}
+                        onChange={(e) => setInterests(e.target.value)}
                         rows={3}
                         className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                        placeholder='you@example.com'
-                        defaultValue={''}
+                        placeholder='I actively invest in Crypto, love Pottery and Snowboard 5/week!'
                       />
                     </div>
                     <p className='mt-2 text-sm text-gray-500'>
-                      Brief description for your profile. URLs are hyperlinked.
+                      Update your interests so people know what to ask you about!
                     </p>
-                  </div> */}
+                  </div>{' '}
                 </div>
                 <div className='bg-gray-50 px-4 py-3 text-right sm:px-6'>
                   <button
