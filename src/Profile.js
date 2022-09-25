@@ -22,6 +22,7 @@ export function Profile() {
   const [question, setQuestion] = useState('');
   const [bounty, setBounty] = useState(5);
   const [recommendedBounty, setRecommendedBounty] = useState(5);
+  const [interests, setInterests] = useState('');
 
   const { write } = useContractWrite({
     mode: 'recklesslyUnprepared',
@@ -55,6 +56,7 @@ export function Profile() {
       const formatted = Number(ethers.utils.formatEther(newData.priceMinimum.toString()));
       setRecommendedBounty(formatted);
       setBounty(formatted);
+      setInterests(newData.interests);
     }
   }, [newData]);
 
@@ -101,12 +103,29 @@ export function Profile() {
                 Here are some guidelines {formatAddress(address)} has set, follow them to get your
                 question answered!
               </p>
-              <p className='mt-5 text-md text-rose-500'>
-                {recommendedBounty === 0
-                  ? `${formatAddress(
-                      address
-                    )} has not set a minimum price! We'd recommend at least $5 to be safe.`
-                  : `Minimum Price: $${recommendedBounty}`}
+              <p className='mt-5 text-lg font-semibold'>
+                <p className=''>
+                  <span className='underline underline-offset-4 decoration-blue-800'>
+                    Minimum Price:
+                  </span>{' '}
+                  {recommendedBounty === 0 ? (
+                    <p className='font-normal'>
+                      {formatAddress(address)} has not set a minimum price! We'd recommend at least
+                      $5.
+                    </p>
+                  ) : (
+                    <span className='font-bold text-green-600'>${recommendedBounty}</span>
+                  )}
+                </p>
+
+                <p className='underline underline-offset-4 decoration-blue-800'>Interests: </p>
+                {interests === '' ? (
+                  <p className='text-md font-normal'>
+                    {formatAddress(address)} hasn't set any interests, ask them anything!
+                  </p>
+                ) : (
+                  <p className='text-md font-normal'>{interests}</p>
+                )}
               </p>
             </div>
           </div>

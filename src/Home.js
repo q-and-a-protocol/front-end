@@ -37,7 +37,7 @@ const isToday = (someDate) => {
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export function Home() {
-  const { address, isConnected } = useAccount();
+  const { address: myAddress, isConnected } = useAccount();
   const [inputAddress, setInputAddress] = useState('');
   const { loading, error, data } = useQuery(GET_ALL_QUESTIONS);
   const { data: ensName } = useEnsName();
@@ -47,8 +47,13 @@ export function Home() {
   const newsfeedEvents = data?.newsfeedEvents;
 
   function formatAddress(address) {
+    let result;
+    if (myAddress && ethers.utils.getAddress(address) == ethers.utils.getAddress(myAddress)) {
+      return 'You';
+    }
     const formattedAddress = address.slice(0, 6) + '...' + address.slice(-4);
-    return ensName ? ensName : formattedAddress;
+    result = ensName ? ensName : formattedAddress;
+    return result;
   }
 
   useEffect(() => {
