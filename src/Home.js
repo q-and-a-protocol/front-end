@@ -1,4 +1,4 @@
-import { useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi';
+import { useAccount, useDisconnect, useEnsName, useNetwork } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
@@ -43,8 +43,6 @@ export function Home() {
   const { data: ensName } = useEnsName();
 
   const [timeline, setTimeline] = useState([]);
-
-  const newsfeedEvents = data?.newsfeedEvents;
 
   function formatAddress(address) {
     let result;

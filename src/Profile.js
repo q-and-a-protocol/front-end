@@ -1,21 +1,13 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-  useContractWrite,
-  usePrepareContractWrite,
-  useEnsName,
-  useContractRead,
-  useAccount,
-} from 'wagmi';
-import { abi as QuestionAndAnswerABI } from './contractInformation/QuestionAndAnswer-abi';
-import { abi as ExampleERC20ABI } from './contractInformation/ExampleERC20-abi';
+import { useContractWrite, useNetwork, useEnsName, useContractRead, useAccount } from 'wagmi';
+import QuestionAndAnswerABI from './constants/QuestionAndAnswer.json';
+import ExampleERC20ABI from './constants/ExampleERC20.json';
 import * as ethers from 'ethers';
+import networkMapping from './constants/networkMapping.json';
 
 export function Profile() {
-  const questionAndAnswerAddress = process.env.REACT_APP_QUESTION_AND_ANSWER_ADDRESS;
-  const exampleERC20Address = process.env.REACT_APP_EXAMPLE_ERC20_ADDRESS;
-
   const { address: userAddress } = useAccount();
   const { address } = useParams();
   const { data: ensName } = useEnsName();
@@ -23,10 +15,15 @@ export function Profile() {
   const [bounty, setBounty] = useState(5);
   const [recommendedBounty, setRecommendedBounty] = useState(5);
   const [interests, setInterests] = useState('');
+  const {
+    chain: { id: chainId },
+  } = useNetwork();
+  const QuestionAndAnswerAddress = networkMapping[chainId].QuestionAndAnswer[0];
+  const ExampleERC20Address = networkMapping[chainId].ExampleERC20[0];
 
   const { write } = useContractWrite({
     mode: 'recklesslyUnprepared',
-    addressOrName: questionAndAnswerAddress,
+    addressOrName: QuestionAndAnswerAddress,
     contractInterface: QuestionAndAnswerABI,
     functionName: 'askQuestion',
     args: [question, address, bounty],
@@ -45,7 +42,7 @@ export function Profile() {
   }
 
   const { data: newData } = useContractRead({
-    addressOrName: questionAndAnswerAddress,
+    addressOrName: QuestionAndAnswerAddress,
     contractInterface: QuestionAndAnswerABI,
     functionName: 'answererToSettings',
     args: [address],
@@ -62,23 +59,16 @@ export function Profile() {
 
   const { write: approveFunds } = useContractWrite({
     mode: 'recklesslyUnprepared',
-    addressOrName: exampleERC20Address,
+    addressOrName: ExampleERC20Address,
     contractInterface: ExampleERC20ABI,
     functionName: 'increaseAllowance',
-    args: [questionAndAnswerAddress, bounty],
+    args: [QuestionAndAnswerAddress, bounty],
   });
-
-  async function handleSubmit(event) {
-    event.preventDefault();
-    write?.({
-      recklesslySetUnpreparedArgs: [question, address, ethers.utils.parseUnits(bounty).toString()],
-    });
-  }
 
   function handleApprovePrice() {
     approveFunds?.({
       recklesslySetUnpreparedArgs: [
-        questionAndAnswerAddress,
+        QuestionAndAnswerAddress,
         ethers.utils.parseUnits(bounty).toString(),
       ],
     });

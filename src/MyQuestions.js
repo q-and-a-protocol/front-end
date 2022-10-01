@@ -1,14 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useContract, useProvider, useContractRead, useAccount, useEnsName } from 'wagmi';
-import { InjectedConnector } from 'wagmi/connectors/injected';
-import { abi } from './contractInformation/QuestionAndAnswer-abi';
+import { useProvider, useAccount, useEnsName } from 'wagmi';
 import { useQuery, gql } from '@apollo/client';
 import { Link as RouterLink, Router } from 'react-router-dom';
 import * as ethers from 'ethers';
 import { CheckIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/20/solid';
-
-const questionAndAnswerAddress = process.env.REACT_APP_QUESTION_AND_ANSWER_ADDRESS;
-const exampleERC20Address = process.env.REACT_APP_EXAMPLE_ERC20_ADDRESS;
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -79,6 +74,7 @@ export function MyQuestions() {
   const [questionsFeedWhenAnswerer, setQuestionsFeedWhenAnswerer] = useState([]);
 
   useEffect(() => {
+    console.log(myQuestionsWhenAnswerer);
     if (!myQuestionsWhenAnswerer) setQuestionsFeedWhenAnswerer([]);
     else if (!myQuestionsWhenAnswerer.newsfeedEvents) setQuestionsFeedWhenAnswerer([]);
     else {

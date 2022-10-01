@@ -1,25 +1,27 @@
 import { useState, useEffect } from 'react';
-import { useAccount, useContractWrite, useContractRead } from 'wagmi';
-import { abi } from './contractInformation/QuestionAndAnswer-abi';
+import { useAccount, useContractWrite, useContractRead, useNetwork } from 'wagmi';
+import QuestionAndAnswerABI from './constants/QuestionAndAnswer.json';
 import * as ethers from 'ethers';
-
-const questionAndAnswerAddress = process.env.REACT_APP_QUESTION_AND_ANSWER_ADDRESS;
-const exampleERC20Address = process.env.REACT_APP_EXAMPLE_ERC20_ADDRESS;
+import networkMapping from './constants/networkMapping.json';
 
 export function MyProfile() {
   const { address } = useAccount();
   const [bounty, setBounty] = useState(0);
   const [interests, setInterests] = useState('');
   const [withdrawableAmount, setWithdrawableAmount] = useState(0);
+  const {
+    chain: { id: chainId },
+  } = useNetwork();
+  const QuestionAndAnswerAddress = networkMapping[chainId].QuestionAndAnswer[0];
 
   function updateBounty(e) {
     setBounty(e.target.value);
   }
 
-  const { data, write } = useContractWrite({
+  const { write } = useContractWrite({
     mode: 'recklesslyUnprepared',
-    addressOrName: questionAndAnswerAddress,
-    contractInterface: abi,
+    addressOrName: QuestionAndAnswerAddress,
+    contractInterface: QuestionAndAnswerABI,
     functionName: 'setAnswererSettings',
   });
 
@@ -31,8 +33,8 @@ export function MyProfile() {
   }
 
   const { data: newData } = useContractRead({
-    addressOrName: questionAndAnswerAddress,
-    contractInterface: abi,
+    addressOrName: QuestionAndAnswerAddress,
+    contractInterface: QuestionAndAnswerABI,
     functionName: 'answererToSettings',
     args: [address],
   });
@@ -47,8 +49,8 @@ export function MyProfile() {
 
   const { write: answererWithdraw } = useContractWrite({
     mode: 'recklesslyUnprepared',
-    addressOrName: questionAndAnswerAddress,
-    contractInterface: abi,
+    addressOrName: QuestionAndAnswerAddress,
+    contractInterface: QuestionAndAnswerABI,
     functionName: 'answererWithdraw',
   });
 

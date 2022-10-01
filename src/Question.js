@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAccount, useContractWrite, useContractRead, useEnsName } from 'wagmi';
-import { abi as QuestionAndAnswerABI } from './contractInformation/QuestionAndAnswer-abi';
+import { useAccount, useContractWrite, useContractRead, useEnsName, useNetwork } from 'wagmi';
+import QuestionAndAnswerABI from './constants/QuestionAndAnswer.json';
 import * as ethers from 'ethers';
-
-const questionAndAnswerAddress = process.env.REACT_APP_QUESTION_AND_ANSWER_ADDRESS;
-const exampleERC20Address = process.env.REACT_APP_EXAMPLE_ERC20_ADDRESS;
+import networkMapping from './constants/networkMapping.json';
 
 export function Question() {
   const { address: myAddress } = useAccount();
@@ -13,6 +11,10 @@ export function Question() {
   const { data: ensName } = useEnsName();
   const [questionData, setQuestionData] = useState();
   const [answer, setAnswer] = useState();
+  const {
+    chain: { id: chainId },
+  } = useNetwork();
+  const QuestionAndAnswerAddress = networkMapping[chainId].QuestionAndAnswer[0];
 
   function formatAddress(address) {
     let result;
@@ -25,7 +27,7 @@ export function Question() {
   }
 
   const { data: newData } = useContractRead({
-    addressOrName: questionAndAnswerAddress,
+    addressOrName: QuestionAndAnswerAddress,
     contractInterface: QuestionAndAnswerABI,
     functionName: 'getQuestionerToAnswererToQAs',
     args: [questioner, answerer, index],
@@ -45,7 +47,7 @@ export function Question() {
 
   const { write: answerQuestion } = useContractWrite({
     mode: 'recklesslyUnprepared',
-    addressOrName: questionAndAnswerAddress,
+    addressOrName: QuestionAndAnswerAddress,
     contractInterface: QuestionAndAnswerABI,
     functionName: 'answerQuestion',
     args: [questioner, index, answer],
