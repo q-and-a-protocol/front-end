@@ -174,19 +174,29 @@ export function Home() {
                             className='font-medium text-gray-900 pr-2 flex flex-row items-center'
                           >
                             {formatAddress(event.source)}
-                            <Tooltip title='Verified! This user has asked or answered a question recently.'>
-                              <CheckBadgeIcon
-                                className='inline h-4 w-4 text-green-600 ml-1'
-                                aria-hidden='true'
-                              />
-                            </Tooltip>
+                            {event.sourceHasAskedAnswered ? (
+                              <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                                <CheckBadgeIcon
+                                  className='inline h-4 w-4 text-green-600 ml-1'
+                                  aria-hidden='true'
+                                />
+                              </Tooltip>
+                            ) : null}
                           </RouterLink>
                           {event.content}{' '}
                           <RouterLink
                             to={event.to + event.target}
-                            className='font-medium text-gray-900 ml-2'
+                            className='font-medium text-gray-900 ml-2 flex flex-row items-center'
                           >
                             {formatAddress(event.target)}
+                            {event.targetHasAskedAnswered ? (
+                              <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                                <CheckBadgeIcon
+                                  className='inline h-4 w-4 text-green-600 ml-1'
+                                  aria-hidden='true'
+                                />
+                              </Tooltip>
+                            ) : null}
                           </RouterLink>
                         </p>
                       </div>

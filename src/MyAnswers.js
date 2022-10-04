@@ -3,7 +3,8 @@ import { useNetwork, useProvider, useAccount, useEnsName } from 'wagmi';
 import { useQuery, gql } from '@apollo/client';
 import { Link as RouterLink, Router } from 'react-router-dom';
 import * as ethers from 'ethers';
-import { CheckIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/20/solid';
+import { CheckIcon, ChatBubbleLeftRightIcon, CheckBadgeIcon } from '@heroicons/react/20/solid';
+import Tooltip from '@mui/material/Tooltip';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -20,55 +21,74 @@ const isToday = (someDate) => {
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+const GET_MY_QUESTIONS_WHEN_ANSWERER = gql`
+  query GetMyQuestionsWhenAnswerer($address: Bytes!) {
+    newsfeedEvents(first: 20, where: { answerer: $address, answered: true }) {
+      id
+      questioner
+      answerer
+      questionId
+      bounty
+      date
+      answered
+      question
+      answer
+    }
+  }
+`;
+
+const GET_MY_QUESTIONS_WHEN_QUESTIONER = gql`
+  query GetMyQuestionsWhenQuestioner($address: Bytes!) {
+    newsfeedEvents(first: 20, where: { questioner: $address, answered: true }) {
+      id
+      questioner
+      answerer
+      questionId
+      bounty
+      date
+      answered
+      question
+      answer
+    }
+  }
+`;
+
+const GET_ALL_USERS = gql`
+  {
+    users {
+      id
+      address
+      hasAsked
+      hasAnswered
+      lastActivityDate
+    }
+  }
+`;
+
 export function MyAnswers() {
-  const { address, isConnected } = useAccount();
-  const provider = useProvider();
+  const { address: myAddress } = useAccount();
   const { data: ensName } = useEnsName();
+  const [userMapping, setUserMapping] = useState({});
 
   function formatAddress(address) {
+    let result;
+    if (myAddress && ethers.utils.getAddress(address) == ethers.utils.getAddress(myAddress)) {
+      return 'You';
+    }
     const formattedAddress = address.slice(0, 6) + '...' + address.slice(-4);
-    return ensName ? ensName : formattedAddress;
+    result = ensName ? ensName : formattedAddress;
+    return result;
   }
 
-  const GET_MY_QUESTIONS_WHEN_ANSWERER = gql`
-    query GetMyQuestionsWhenAnswerer($address: Bytes!) {
-      newsfeedEvents(first: 20, where: { answerer: $address, answered: true }) {
-        id
-        questioner
-        answerer
-        questionId
-        bounty
-        date
-        answered
-        question
-        answer
-      }
-    }
-  `;
-
-  const GET_MY_QUESTIONS_WHEN_QUESTIONER = gql`
-    query GetMyQuestionsWhenQuestioner($address: Bytes!) {
-      newsfeedEvents(first: 20, where: { questioner: $address, answered: true }) {
-        id
-        questioner
-        answerer
-        questionId
-        bounty
-        date
-        answered
-        question
-        answer
-      }
-    }
-  `;
-
   const { data: myQuestionsWhenAnswerer } = useQuery(GET_MY_QUESTIONS_WHEN_ANSWERER, {
-    variables: { address },
+    variables: { address: myAddress },
   });
 
   const { data: myQuestionsWhenQuestioner } = useQuery(GET_MY_QUESTIONS_WHEN_QUESTIONER, {
-    variables: { address },
+    variables: { address: myAddress },
   });
+
+  const { data: allUsers } = useQuery(GET_ALL_USERS);
 
   const [questionsFeedWhenQuestioner, setQuestionsFeedWhenQuestioner] = useState([]);
   const [questionsFeedWhenAnswerer, setQuestionsFeedWhenAnswerer] = useState([]);
@@ -94,18 +114,24 @@ export function MyAnswers() {
               source: e.questioner,
               target: e.answerer,
               index: e.questionId,
-              content: `asked you a question:`,
+              contentPre: 'asked',
+              contentPost: 'a question:',
               question: e.question,
               to: '/question/',
+              toProfile: '/profile/',
               date: !isToday(date) ? getExtraDate + time : time,
               icon: e.answered ? CheckIcon : ChatBubbleLeftRightIcon,
               iconBackground: e.answered ? 'bg-green-600' : 'bg-indigo-600',
               bounty: e.bounty,
+              sourceHasAskedAnswered:
+                userMapping[e.questioner]?.hasAsked || userMapping[e.questioner]?.hasAnswered,
+              targetHasAskedAnswered:
+                userMapping[e.answerer]?.hasAsked || userMapping[e.answerer]?.hasAnswered,
             };
           })
       );
     }
-  }, [myQuestionsWhenAnswerer]);
+  }, [myQuestionsWhenAnswerer, userMapping]);
 
   useEffect(() => {
     if (!myQuestionsWhenQuestioner) setQuestionsFeedWhenQuestioner([]);
@@ -128,19 +154,36 @@ export function MyAnswers() {
               source: e.questioner,
               target: e.answerer,
               index: e.questionId,
-              contentPre: 'You asked',
+              contentPre: 'asked',
               contentPost: 'a question:',
               question: e.question,
               to: '/question/',
+              toProfile: '/profile/',
               date: !isToday(date) ? getExtraDate + time : time,
               icon: e.answered ? CheckIcon : ChatBubbleLeftRightIcon,
               iconBackground: e.answered ? 'bg-green-600' : 'bg-indigo-600',
               bounty: e.bounty,
+              sourceHasAskedAnswered:
+                userMapping[e.questioner]?.hasAsked || userMapping[e.questioner]?.hasAnswered,
+              targetHasAskedAnswered:
+                userMapping[e.answerer]?.hasAsked || userMapping[e.answerer]?.hasAnswered,
             };
           })
       );
     }
-  }, [myQuestionsWhenQuestioner]);
+  }, [myQuestionsWhenQuestioner, userMapping]);
+
+  useEffect(() => {
+    if (!allUsers) setUserMapping({});
+    else if (!allUsers.users) setUserMapping({});
+    else {
+      const mapping = {};
+      allUsers.users.forEach((e) => {
+        mapping[e.address] = e;
+      });
+      setUserMapping(mapping);
+    }
+  }, [allUsers]);
 
   return (
     <div className='bg-white sm:rounded-lg '>
@@ -198,11 +241,37 @@ export function MyAnswers() {
                                   </div>
                                   <div className='flex min-w-0 flex-1 justify-between space-x-4 pt-1.5'>
                                     <div>
-                                      <p className='text-sm text-gray-500'>
-                                        <span className='font-medium text-gray-900 pr-2'>
+                                      <p className='text-sm text-gray-500 flex flex-row'>
+                                        <RouterLink
+                                          to={event.toProfile + event.source}
+                                          className='font-medium text-gray-900 pr-2 flex flex-row items-center'
+                                        >
                                           {formatAddress(event.source)}
-                                        </span>
-                                        {event.content}
+                                          {event.sourceHasAskedAnswered ? (
+                                            <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                                              <CheckBadgeIcon
+                                                className='inline h-4 w-4 text-green-600 ml-1'
+                                                aria-hidden='true'
+                                              />
+                                            </Tooltip>
+                                          ) : null}
+                                        </RouterLink>
+                                        {event.contentPre}
+                                        <RouterLink
+                                          to={event.toProfile + event.target}
+                                          className='font-medium text-gray-900 mx-2 flex flex-row items-center'
+                                        >
+                                          {formatAddress(event.target)}
+                                          {event.targetHasAskedAnswered ? (
+                                            <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                                              <CheckBadgeIcon
+                                                className='inline h-4 w-4 text-green-600 ml-1'
+                                                aria-hidden='true'
+                                              />
+                                            </Tooltip>
+                                          ) : null}
+                                        </RouterLink>
+                                        {event.contentPost}
                                       </p>
                                       <p className='text-md text-gray-800 my-3'>{event.question}</p>
                                     </div>
@@ -275,11 +344,36 @@ export function MyAnswers() {
                                   </div>
                                   <div className='flex min-w-0 flex-1 justify-between space-x-4 pt-1.5'>
                                     <div>
-                                      <p className='text-sm text-gray-500'>
+                                      <p className='text-sm text-gray-500 flex flex-row'>
+                                        <RouterLink
+                                          to={event.toProfile + event.source}
+                                          className='font-medium text-gray-900 pr-2 flex flex-row items-center'
+                                        >
+                                          {formatAddress(event.source)}
+                                          {event.sourceHasAskedAnswered ? (
+                                            <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                                              <CheckBadgeIcon
+                                                className='inline h-4 w-4 text-green-600 ml-1'
+                                                aria-hidden='true'
+                                              />
+                                            </Tooltip>
+                                          ) : null}
+                                        </RouterLink>
                                         {event.contentPre}
-                                        <span className='font-medium text-gray-900 px-2'>
+                                        <RouterLink
+                                          to={event.toProfile + event.target}
+                                          className='font-medium text-gray-900 mx-2 flex flex-row items-center'
+                                        >
                                           {formatAddress(event.target)}
-                                        </span>
+                                          {event.targetHasAskedAnswered ? (
+                                            <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                                              <CheckBadgeIcon
+                                                className='inline h-4 w-4 text-green-600 ml-1'
+                                                aria-hidden='true'
+                                              />
+                                            </Tooltip>
+                                          ) : null}
+                                        </RouterLink>
                                         {event.contentPost}
                                       </p>
                                       <p className='text-md text-gray-800 my-3'>{event.question}</p>
