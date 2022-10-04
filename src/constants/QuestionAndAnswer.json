@@ -21,6 +21,16 @@
     },
     {
         "type": "error",
+        "name": "QuestionAndAnswer__CannotCancelQuestion",
+        "inputs": []
+    },
+    {
+        "type": "error",
+        "name": "QuestionAndAnswer__InvalidExpiry",
+        "inputs": []
+    },
+    {
+        "type": "error",
         "name": "QuestionAndAnswer__InvalidPriceMinimum",
         "inputs": []
     },
@@ -37,6 +47,11 @@
     {
         "type": "error",
         "name": "QuestionAndAnswer__QuestionDoesNotExist",
+        "inputs": []
+    },
+    {
+        "type": "error",
+        "name": "QuestionAndAnswer__QuestionHasExpired",
         "inputs": []
     },
     {
@@ -110,32 +125,10 @@
                 "type": "string",
                 "name": "question",
                 "indexed": false
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "anonymous": false,
-        "name": "QuestionCanceled",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "questioner",
-                "indexed": true
-            },
-            {
-                "type": "address",
-                "name": "answerer",
-                "indexed": true
             },
             {
                 "type": "uint256",
-                "name": "questionId",
-                "indexed": true
-            },
-            {
-                "type": "uint256",
-                "name": "date",
+                "name": "expiryDate",
                 "indexed": false
             }
         ]
@@ -143,7 +136,7 @@
     {
         "type": "event",
         "anonymous": false,
-        "name": "QuestionExpired",
+        "name": "QuestionCanceled",
         "inputs": [
             {
                 "type": "address",
@@ -260,6 +253,27 @@
             {
                 "type": "uint256",
                 "name": "bounty"
+            },
+            {
+                "type": "uint256",
+                "name": "expiryDate"
+            }
+        ],
+        "outputs": []
+    },
+    {
+        "type": "function",
+        "name": "cancelQuestion",
+        "constant": false,
+        "payable": false,
+        "inputs": [
+            {
+                "type": "address",
+                "name": "answerer"
+            },
+            {
+                "type": "uint256",
+                "name": "questionId"
             }
         ],
         "outputs": []
@@ -293,6 +307,9 @@
             },
             {
                 "type": "bool"
+            },
+            {
+                "type": "uint256"
             },
             {
                 "type": "uint256"
