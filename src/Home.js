@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { useEffect } from 'react';
 import * as ethers from 'ethers';
-import { CheckIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/20/solid';
+import { CheckIcon, ChatBubbleLeftRightIcon, CheckBadgeIcon } from '@heroicons/react/20/solid';
+import Tooltip from '@mui/material/Tooltip';
 
 const GET_ALL_QUESTIONS = gql`
   {
@@ -17,6 +18,18 @@ const GET_ALL_QUESTIONS = gql`
       bounty
       date
       answered
+    }
+  }
+`;
+
+const GET_ALL_USERS = gql`
+  {
+    users {
+      id
+      address
+      hasAsked
+      hasAnswered
+      lastActivityDate
     }
   }
 `;
@@ -37,12 +50,14 @@ const isToday = (someDate) => {
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export function Home() {
-  const { address: myAddress, isConnected } = useAccount();
+  const { address: myAddress } = useAccount();
   const [inputAddress, setInputAddress] = useState('');
-  const { loading, error, data } = useQuery(GET_ALL_QUESTIONS);
+  const { data: allQuestions } = useQuery(GET_ALL_QUESTIONS);
+  const { data: allUsers } = useQuery(GET_ALL_USERS);
   const { data: ensName } = useEnsName();
 
   const [timeline, setTimeline] = useState([]);
+  const [userMapping, setUserMapping] = useState({});
 
   function formatAddress(address) {
     let result;
@@ -55,11 +70,11 @@ export function Home() {
   }
 
   useEffect(() => {
-    if (!data) setTimeline([]);
-    else if (!data.newsfeedEvents) setTimeline([]);
+    if (!allQuestions) setTimeline([]);
+    else if (!allQuestions.newsfeedEvents) setTimeline([]);
     else {
       setTimeline(
-        data?.newsfeedEvents
+        allQuestions?.newsfeedEvents
           ?.slice()
           .sort((a, b) => b.date - a.date)
           .map((e) => {
@@ -80,11 +95,27 @@ export function Home() {
               icon: e.answered ? CheckIcon : ChatBubbleLeftRightIcon,
               iconBackground: e.answered ? 'bg-green-600' : 'bg-indigo-600',
               bounty: e.bounty,
+              sourceHasAskedAnswered:
+                userMapping[e.questioner]?.hasAsked || userMapping[e.questioner]?.hasAnswered,
+              targetHasAskedAnswered:
+                userMapping[e.answerer]?.hasAsked || userMapping[e.answerer]?.hasAnswered,
             };
           })
       );
     }
-  }, [data]);
+  }, [allQuestions, userMapping]);
+
+  useEffect(() => {
+    if (!allUsers) setUserMapping({});
+    else if (!allUsers.users) setUserMapping({});
+    else {
+      const mapping = {};
+      allUsers.users.forEach((e) => {
+        mapping[e.address] = e;
+      });
+      setUserMapping(mapping);
+    }
+  }, [allUsers]);
 
   return (
     <div className='bg-white sm:rounded-lg '>
@@ -137,17 +168,23 @@ export function Home() {
                     </div>
                     <div className='flex min-w-0 flex-1 justify-between space-x-4 pt-1.5'>
                       <div>
-                        <p className='text-sm text-gray-500'>
+                        <p className='text-sm text-gray-500 flex flex-row'>
                           <RouterLink
                             to={event.to + event.source}
-                            className='font-medium text-gray-900 pr-2'
+                            className='font-medium text-gray-900 pr-2 flex flex-row items-center'
                           >
                             {formatAddress(event.source)}
+                            <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                              <CheckBadgeIcon
+                                className='inline h-4 w-4 text-green-600 ml-1'
+                                aria-hidden='true'
+                              />
+                            </Tooltip>
                           </RouterLink>
                           {event.content}{' '}
                           <RouterLink
                             to={event.to + event.target}
-                            className='font-medium text-gray-900'
+                            className='font-medium text-gray-900 ml-2'
                           >
                             {formatAddress(event.target)}
                           </RouterLink>

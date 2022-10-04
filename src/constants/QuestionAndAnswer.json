@@ -1,1 +1,322 @@
-[{"type":"constructor","payable":false,"inputs":[{"type":"address","name":"USDCAddress"}]},{"type":"error","name":"QuestionAndAnswer__AllowanceTooLow","inputs":[]},{"type":"error","name":"QuestionAndAnswer__BountyTooLow","inputs":[]},{"type":"error","name":"QuestionAndAnswer__InvalidPriceMinimum","inputs":[]},{"type":"error","name":"QuestionAndAnswer__NothingToWithdraw","inputs":[]},{"type":"error","name":"QuestionAndAnswer__QuestionAlreadyAnswered","inputs":[]},{"type":"error","name":"QuestionAndAnswer__QuestionDoesNotExist","inputs":[]},{"type":"event","anonymous":false,"name":"QuestionAnswered","inputs":[{"type":"address","name":"questioner","indexed":true},{"type":"address","name":"answerer","indexed":true},{"type":"uint256","name":"questionId","indexed":true},{"type":"uint256","name":"bounty","indexed":false},{"type":"uint256","name":"date","indexed":false},{"type":"string","name":"answer","indexed":false}]},{"type":"event","anonymous":false,"name":"QuestionAsked","inputs":[{"type":"address","name":"questioner","indexed":true},{"type":"address","name":"answerer","indexed":true},{"type":"uint256","name":"questionId","indexed":true},{"type":"uint256","name":"bounty","indexed":false},{"type":"uint256","name":"date","indexed":false},{"type":"string","name":"question","indexed":false}]},{"type":"event","anonymous":false,"name":"QuestionCanceled","inputs":[{"type":"address","name":"questioner","indexed":true},{"type":"address","name":"answerer","indexed":true},{"type":"uint256","name":"questionId","indexed":true},{"type":"uint256","name":"date","indexed":false}]},{"type":"event","anonymous":false,"name":"QuestionExpired","inputs":[{"type":"address","name":"questioner","indexed":true},{"type":"address","name":"answerer","indexed":true},{"type":"uint256","name":"questionId","indexed":true},{"type":"uint256","name":"date","indexed":false}]},{"type":"event","anonymous":false,"name":"Withdraw","inputs":[{"type":"address","name":"withdrawalBy","indexed":true},{"type":"uint256","name":"amount","indexed":true}]},{"type":"function","name":"answerQuestion","constant":false,"payable":false,"gas":29000000,"inputs":[{"type":"address","name":"questioner"},{"type":"uint256","name":"questionId"},{"type":"string","name":"answer"}],"outputs":[]},{"type":"function","name":"answererToSettings","constant":true,"stateMutability":"view","payable":false,"gas":29000000,"inputs":[{"type":"address"}],"outputs":[{"type":"bool","name":"populated"},{"type":"uint256","name":"priceMinimum"},{"type":"uint256","name":"withdrawableAmount"},{"type":"string","name":"interests"}]},{"type":"function","name":"answererWithdraw","constant":false,"payable":false,"gas":29000000,"inputs":[],"outputs":[]},{"type":"function","name":"askQuestion","constant":false,"payable":false,"gas":29000000,"inputs":[{"type":"string","name":"question"},{"type":"address","name":"answerer"},{"type":"uint256","name":"bounty"}],"outputs":[]},{"type":"function","name":"getQuestionerToAnswererToQAs","constant":true,"stateMutability":"view","payable":false,"gas":29000000,"inputs":[{"type":"address","name":"questioner"},{"type":"address","name":"answerer"},{"type":"uint256","name":"index"}],"outputs":[{"type":"string"},{"type":"string"},{"type":"bool"},{"type":"uint256"},{"type":"uint256"}]},{"type":"function","name":"setAnswererSettings","constant":false,"payable":false,"gas":29000000,"inputs":[{"type":"uint256","name":"priceMinimum"},{"type":"string","name":"interests"}],"outputs":[]}]
+[
+    {
+        "type": "constructor",
+        "payable": false,
+        "inputs": [
+            {
+                "type": "address",
+                "name": "USDCAddress"
+            }
+        ]
+    },
+    {
+        "type": "error",
+        "name": "QuestionAndAnswer__AllowanceTooLow",
+        "inputs": []
+    },
+    {
+        "type": "error",
+        "name": "QuestionAndAnswer__BountyTooLow",
+        "inputs": []
+    },
+    {
+        "type": "error",
+        "name": "QuestionAndAnswer__InvalidPriceMinimum",
+        "inputs": []
+    },
+    {
+        "type": "error",
+        "name": "QuestionAndAnswer__NothingToWithdraw",
+        "inputs": []
+    },
+    {
+        "type": "error",
+        "name": "QuestionAndAnswer__QuestionAlreadyAnswered",
+        "inputs": []
+    },
+    {
+        "type": "error",
+        "name": "QuestionAndAnswer__QuestionDoesNotExist",
+        "inputs": []
+    },
+    {
+        "type": "event",
+        "anonymous": false,
+        "name": "QuestionAnswered",
+        "inputs": [
+            {
+                "type": "address",
+                "name": "questioner",
+                "indexed": true
+            },
+            {
+                "type": "address",
+                "name": "answerer",
+                "indexed": true
+            },
+            {
+                "type": "uint256",
+                "name": "questionId",
+                "indexed": true
+            },
+            {
+                "type": "uint256",
+                "name": "bounty",
+                "indexed": false
+            },
+            {
+                "type": "uint256",
+                "name": "date",
+                "indexed": false
+            },
+            {
+                "type": "string",
+                "name": "answer",
+                "indexed": false
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "anonymous": false,
+        "name": "QuestionAsked",
+        "inputs": [
+            {
+                "type": "address",
+                "name": "questioner",
+                "indexed": true
+            },
+            {
+                "type": "address",
+                "name": "answerer",
+                "indexed": true
+            },
+            {
+                "type": "uint256",
+                "name": "questionId",
+                "indexed": true
+            },
+            {
+                "type": "uint256",
+                "name": "bounty",
+                "indexed": false
+            },
+            {
+                "type": "uint256",
+                "name": "date",
+                "indexed": false
+            },
+            {
+                "type": "string",
+                "name": "question",
+                "indexed": false
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "anonymous": false,
+        "name": "QuestionCanceled",
+        "inputs": [
+            {
+                "type": "address",
+                "name": "questioner",
+                "indexed": true
+            },
+            {
+                "type": "address",
+                "name": "answerer",
+                "indexed": true
+            },
+            {
+                "type": "uint256",
+                "name": "questionId",
+                "indexed": true
+            },
+            {
+                "type": "uint256",
+                "name": "date",
+                "indexed": false
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "anonymous": false,
+        "name": "QuestionExpired",
+        "inputs": [
+            {
+                "type": "address",
+                "name": "questioner",
+                "indexed": true
+            },
+            {
+                "type": "address",
+                "name": "answerer",
+                "indexed": true
+            },
+            {
+                "type": "uint256",
+                "name": "questionId",
+                "indexed": true
+            },
+            {
+                "type": "uint256",
+                "name": "date",
+                "indexed": false
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "anonymous": false,
+        "name": "Withdraw",
+        "inputs": [
+            {
+                "type": "address",
+                "name": "withdrawalBy",
+                "indexed": true
+            },
+            {
+                "type": "uint256",
+                "name": "amount",
+                "indexed": true
+            }
+        ]
+    },
+    {
+        "type": "function",
+        "name": "answerQuestion",
+        "constant": false,
+        "payable": false,
+        "inputs": [
+            {
+                "type": "address",
+                "name": "questioner"
+            },
+            {
+                "type": "uint256",
+                "name": "questionId"
+            },
+            {
+                "type": "string",
+                "name": "answer"
+            }
+        ],
+        "outputs": []
+    },
+    {
+        "type": "function",
+        "name": "answererToSettings",
+        "constant": true,
+        "stateMutability": "view",
+        "payable": false,
+        "inputs": [
+            {
+                "type": "address"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "bool",
+                "name": "populated"
+            },
+            {
+                "type": "uint256",
+                "name": "priceMinimum"
+            },
+            {
+                "type": "uint256",
+                "name": "withdrawableAmount"
+            },
+            {
+                "type": "string",
+                "name": "interests"
+            }
+        ]
+    },
+    {
+        "type": "function",
+        "name": "answererWithdraw",
+        "constant": false,
+        "payable": false,
+        "inputs": [],
+        "outputs": []
+    },
+    {
+        "type": "function",
+        "name": "askQuestion",
+        "constant": false,
+        "payable": false,
+        "inputs": [
+            {
+                "type": "string",
+                "name": "question"
+            },
+            {
+                "type": "address",
+                "name": "answerer"
+            },
+            {
+                "type": "uint256",
+                "name": "bounty"
+            }
+        ],
+        "outputs": []
+    },
+    {
+        "type": "function",
+        "name": "getQuestionerToAnswererToQAs",
+        "constant": true,
+        "stateMutability": "view",
+        "payable": false,
+        "inputs": [
+            {
+                "type": "address",
+                "name": "questioner"
+            },
+            {
+                "type": "address",
+                "name": "answerer"
+            },
+            {
+                "type": "uint256",
+                "name": "index"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "string"
+            },
+            {
+                "type": "string"
+            },
+            {
+                "type": "bool"
+            },
+            {
+                "type": "uint256"
+            },
+            {
+                "type": "uint256"
+            }
+        ]
+    },
+    {
+        "type": "function",
+        "name": "setAnswererSettings",
+        "constant": false,
+        "payable": false,
+        "inputs": [
+            {
+                "type": "uint256",
+                "name": "priceMinimum"
+            },
+            {
+                "type": "string",
+                "name": "interests"
+            }
+        ],
+        "outputs": []
+    }
+]

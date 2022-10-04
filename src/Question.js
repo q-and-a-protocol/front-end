@@ -14,7 +14,7 @@ export function Question() {
   const {
     chain: { id: chainId },
   } = useNetwork();
-  const QuestionAndAnswerAddress = networkMapping[chainId].QuestionAndAnswer[0];
+  const QuestionAndAnswerAddress = networkMapping[chainId]?.QuestionAndAnswer[0];
 
   function formatAddress(address) {
     let result;

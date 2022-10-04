@@ -18,8 +18,8 @@ export function Profile() {
   const {
     chain: { id: chainId },
   } = useNetwork();
-  const QuestionAndAnswerAddress = networkMapping[chainId].QuestionAndAnswer[0];
-  const ExampleERC20Address = networkMapping[chainId].ExampleERC20[0];
+  const QuestionAndAnswerAddress = networkMapping[chainId]?.QuestionAndAnswer[0];
+  const ExampleERC20Address = networkMapping[chainId]?.ExampleERC20[0];
 
   const { write } = useContractWrite({
     mode: 'recklesslyUnprepared',
@@ -93,16 +93,16 @@ export function Profile() {
                 Here are some guidelines {formatAddress(address)} has set, follow them to get your
                 question answered!
               </p>
-              <p className='mt-5 text-lg font-semibold'>
+              <div className='mt-5 text-lg font-semibold'>
                 <p className=''>
                   <span className='underline underline-offset-4 decoration-blue-800'>
                     Minimum Price:
                   </span>{' '}
                   {recommendedBounty === 0 ? (
-                    <p className='font-normal'>
+                    <span className='font-normal'>
                       {formatAddress(address)} has not set a minimum price! We'd recommend at least
                       $5.
-                    </p>
+                    </span>
                   ) : (
                     <span className='font-bold text-green-600'>${recommendedBounty}</span>
                   )}
@@ -116,7 +116,7 @@ export function Profile() {
                 ) : (
                   <p className='text-md font-normal'>{interests}</p>
                 )}
-              </p>
+              </div>
             </div>
           </div>
           <div className='mt-5 md:col-span-2 md:mt-0'>

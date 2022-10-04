@@ -11,7 +11,7 @@ export function Utilities() {
   const {
     chain: { id: chainId },
   } = useNetwork();
-  const ExampleERC20Address = networkMapping[chainId].ExampleERC20[0];
+  const ExampleERC20Address = networkMapping[chainId]?.ExampleERC20[0];
 
   const { config } = usePrepareContractWrite({
     addressOrName: ExampleERC20Address,

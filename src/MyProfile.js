@@ -12,7 +12,7 @@ export function MyProfile() {
   const {
     chain: { id: chainId },
   } = useNetwork();
-  const QuestionAndAnswerAddress = networkMapping[chainId].QuestionAndAnswer[0];
+  const QuestionAndAnswerAddress = networkMapping[chainId]?.QuestionAndAnswer[0];
 
   function updateBounty(e) {
     setBounty(e.target.value);
