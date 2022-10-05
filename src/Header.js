@@ -3,15 +3,7 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 
 import { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
-import {
-  Bars3Icon,
-  BookmarkSquareIcon,
-  CalendarIcon,
-  LifebuoyIcon,
-  ShieldCheckIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { BrowserRouter as Router, Link as RouterLink, useMatch } from 'react-router-dom';
 
 function classNames(...classes) {
@@ -87,7 +79,7 @@ export function Header() {
           <div className='hidden items-center justify-end md:flex md:flex-1 lg:w-0'>
             {isConnected ? (
               <RouterLink to='/myprofile' className='flex items-center'>
-                <span className='inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100'>
+                <span className='inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100 border border-solid border-gray-200'>
                   <svg
                     className='h-full w-full text-gray-300'
                     fill='currentColor'

@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { useEffect } from 'react';
+import * as React from 'react';
 import * as ethers from 'ethers';
 import {
   CheckIcon,
@@ -11,10 +12,13 @@ import {
   XMarkIcon,
 } from '@heroicons/react/20/solid';
 import Tooltip from '@mui/material/Tooltip';
+import { styled } from '@mui/material/styles';
+import { tooltipClasses } from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 
 const GET_ALL_QUESTIONS = gql`
   {
-    newsfeedEvents(first: 20) {
+    newsfeedEvents {
       id
       questioner
       answerer
@@ -55,6 +59,18 @@ const isToday = (someDate) => {
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+const HtmlTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: '#f5f5f9',
+    color: 'rgba(0, 0, 0, 0.87)',
+    maxWidth: 220,
+    fontSize: theme.typography.pxToRem(12),
+    border: '1px solid #dadde9',
+  },
+}));
+
 export function Home() {
   const { address: myAddress } = useAccount();
   const [inputAddress, setInputAddress] = useState('');
@@ -65,6 +81,7 @@ export function Home() {
   const [timeline, setTimeline] = useState([]);
   const [userMapping, setUserMapping] = useState({});
   const [formattedAddresses, setFormattedAddresses] = useState({});
+  const [count, setCount] = useState({});
 
   useEffect(() => {
     if (!allQuestions) {
@@ -130,6 +147,44 @@ export function Home() {
         formatAddress(e.questioner).then((result) => {
           setFormattedAddresses((prevState) => ({ ...prevState, [e.questioner]: result }));
         });
+        setCount((prevState) => {
+          if (!prevState[e.questioner]) {
+            return {
+              ...prevState,
+              [e.questioner]: {
+                questionCount: 1,
+                answerCount: 0,
+              },
+            };
+          } else {
+            return {
+              ...prevState,
+              [e.questioner]: {
+                ...prevState[e.questioner],
+                questionCount: prevState[e.questioner].questionCount + 1,
+              },
+            };
+          }
+        });
+        setCount((prevState) => {
+          if (!prevState[e.answerer]) {
+            return {
+              ...prevState,
+              [e.answerer]: {
+                questionCount: 0,
+                answerCount: 1,
+              },
+            };
+          } else {
+            return {
+              ...prevState,
+              [e.answerer]: {
+                ...prevState[e.answerer],
+                answerCount: prevState[e.answerer].answerCount + 1,
+              },
+            };
+          }
+        });
       });
     }
   }, [allQuestions]);
@@ -145,6 +200,12 @@ export function Home() {
       setUserMapping(mapping);
     }
   }, [allUsers]);
+
+  useEffect(() => {
+    console.log(count);
+  }, [count]);
+
+  // <Tooltip title='Verified! This user has asked or answered a question recently.'></Tooltip>
 
   return (
     <div className='bg-white sm:rounded-lg '>
@@ -198,20 +259,37 @@ export function Home() {
                     <div className='flex min-w-0 flex-1 justify-between space-x-4 pt-1.5'>
                       <div>
                         <p className='text-sm text-gray-500 flex flex-row'>
-                          <RouterLink
-                            to={event.to + event.source}
-                            className='font-medium text-gray-900 pr-2 flex flex-row items-center'
+                          <HtmlTooltip
+                            title={
+                              <React.Fragment>
+                                <Typography color='inherit'>
+                                  Asked: {count[event.source].questionCount} Questions
+                                </Typography>
+                                <Typography color='inherit'>
+                                  Answered: {count[event.source].answerCount} Questions
+                                </Typography>
+                                <Typography color='inherit'>Verified: Yes</Typography>
+                                <br />
+                                What does all of this mean? This user has <b>asked</b>{' '}
+                                {count[event.source].questionCount} questions and <b>answered</b>{' '}
+                                {count[event.source].answerCount} questions. They are verified
+                                because they were active recently.
+                              </React.Fragment>
+                            }
                           >
-                            {formattedAddresses[event.source] || 'Loading...'}
-                            {event.sourceHasAskedAnswered ? (
-                              <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                            <RouterLink
+                              to={event.to + event.source}
+                              className='font-medium text-gray-900 pr-2 flex flex-row items-center'
+                            >
+                              {formattedAddresses[event.source] || 'Loading...'}
+                              {event.sourceHasAskedAnswered ? (
                                 <CheckBadgeIcon
                                   className='inline h-4 w-4 text-green-600 ml-1'
                                   aria-hidden='true'
                                 />
-                              </Tooltip>
-                            ) : null}
-                          </RouterLink>
+                              ) : null}
+                            </RouterLink>
+                          </HtmlTooltip>
                           {event.content}{' '}
                           <RouterLink
                             to={event.to + event.target}
