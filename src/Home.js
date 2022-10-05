@@ -5,7 +5,12 @@ import { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { useEffect } from 'react';
 import * as ethers from 'ethers';
-import { CheckIcon, ChatBubbleLeftRightIcon, CheckBadgeIcon } from '@heroicons/react/20/solid';
+import {
+  CheckIcon,
+  ChatBubbleLeftRightIcon,
+  CheckBadgeIcon,
+  XMarkIcon,
+} from '@heroicons/react/20/solid';
 import Tooltip from '@mui/material/Tooltip';
 
 const GET_ALL_QUESTIONS = gql`
@@ -18,6 +23,8 @@ const GET_ALL_QUESTIONS = gql`
       bounty
       date
       answered
+      expiryDate
+      expired
     }
   }
 `;
@@ -70,6 +77,7 @@ export function Home() {
   }
 
   useEffect(() => {
+    console.log(allQuestions);
     if (!allQuestions) setTimeline([]);
     else if (!allQuestions.newsfeedEvents) setTimeline([]);
     else {
@@ -91,9 +99,14 @@ export function Home() {
               content: `asked a question to`,
               target: e.answerer,
               to: '/profile/',
-              date: !isToday(date) ? getExtraDate + time : time,
-              icon: e.answered ? CheckIcon : ChatBubbleLeftRightIcon,
-              iconBackground: e.answered ? 'bg-green-600' : 'bg-indigo-600',
+              date: e.expired ? 'Canceled / Expired' : !isToday(date) ? getExtraDate + time : time,
+              expired: e.expired,
+              icon: e.expired ? XMarkIcon : e.answered ? CheckIcon : ChatBubbleLeftRightIcon,
+              iconBackground: e.expired
+                ? 'bg-red-600'
+                : e.answered
+                ? 'bg-green-600'
+                : 'bg-indigo-600',
               bounty: e.bounty,
               sourceHasAskedAnswered:
                 userMapping[e.questioner]?.hasAsked || userMapping[e.questioner]?.hasAnswered,

@@ -7,6 +7,13 @@ import ExampleERC20ABI from './constants/ExampleERC20.json';
 import * as ethers from 'ethers';
 import networkMapping from './constants/networkMapping.json';
 
+function getDefaultExpiry() {
+  const date = new Date();
+  date.setDate(date.getDate() + 7);
+  return date.getTime();
+  // return Math.floor(expiryDate.getTime() / 1000);
+}
+
 export function Profile() {
   const { address: userAddress } = useAccount();
   const { address } = useParams();
@@ -15,6 +22,7 @@ export function Profile() {
   const [bounty, setBounty] = useState(5);
   const [recommendedBounty, setRecommendedBounty] = useState(5);
   const [interests, setInterests] = useState('');
+  const [expiryDate, setExpiryDate] = useState(getDefaultExpiry());
   const {
     chain: { id: chainId },
   } = useNetwork();
@@ -26,13 +34,18 @@ export function Profile() {
     addressOrName: QuestionAndAnswerAddress,
     contractInterface: QuestionAndAnswerABI,
     functionName: 'askQuestion',
-    args: [question, address, bounty],
+    args: [question, address, bounty, Math.floor(expiryDate / 1000)],
   });
 
   async function handleSubmit(event) {
     event.preventDefault();
     write?.({
-      recklesslySetUnpreparedArgs: [question, address, ethers.utils.parseUnits(bounty).toString()],
+      recklesslySetUnpreparedArgs: [
+        question,
+        address,
+        ethers.utils.parseUnits(bounty).toString(),
+        Math.floor(expiryDate / 1000),
+      ],
     });
   }
 
