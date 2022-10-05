@@ -6,6 +6,7 @@ import QuestionAndAnswerABI from './constants/QuestionAndAnswer.json';
 import ExampleERC20ABI from './constants/ExampleERC20.json';
 import * as ethers from 'ethers';
 import networkMapping from './constants/networkMapping.json';
+import Tooltip from '@mui/material/Tooltip';
 
 function getDefaultExpiry() {
   const date = new Date();
@@ -19,7 +20,7 @@ export function Profile() {
   const { address } = useParams();
   const { data: ensName } = useEnsName();
   const [question, setQuestion] = useState('');
-  const [bounty, setBounty] = useState(5);
+  const [bounty, setBounty] = useState('5');
   const [recommendedBounty, setRecommendedBounty] = useState(5);
   const [interests, setInterests] = useState('');
   const [expiryDate, setExpiryDate] = useState(getDefaultExpiry());
@@ -34,7 +35,6 @@ export function Profile() {
     addressOrName: QuestionAndAnswerAddress,
     contractInterface: QuestionAndAnswerABI,
     functionName: 'askQuestion',
-    args: [question, address, bounty, Math.floor(expiryDate / 1000)],
   });
 
   async function handleSubmit(event) {
@@ -75,7 +75,6 @@ export function Profile() {
     addressOrName: ExampleERC20Address,
     contractInterface: ExampleERC20ABI,
     functionName: 'increaseAllowance',
-    args: [QuestionAndAnswerAddress, bounty],
   });
 
   function handleApprovePrice() {
@@ -186,19 +185,27 @@ export function Profile() {
 
               <div className='pt-5'>
                 <div className='flex justify-end'>
-                  <button
-                    type='button'
-                    onClick={handleApprovePrice}
-                    className='ml-3 inline-flex justify-center rounded-md border border-transparent bg-rose-400 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                  <Tooltip
+                    title={
+                      'Step 1: Approves the application to take $' + bounty + ' from your wallet.'
+                    }
                   >
-                    Approve Price
-                  </button>
-                  <button
-                    type='submit'
-                    className='ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
-                  >
-                    Ask Question
-                  </button>
+                    <button
+                      type='button'
+                      onClick={handleApprovePrice}
+                      className='ml-3 inline-flex justify-center rounded-md border border-transparent bg-rose-400 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                    >
+                      Approve Price
+                    </button>
+                  </Tooltip>
+                  <Tooltip title={'Step 2: Post your question onto the blockchain!'}>
+                    <button
+                      type='submit'
+                      className='ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                    >
+                      Ask Question
+                    </button>
+                  </Tooltip>
                 </div>
               </div>
             </form>
