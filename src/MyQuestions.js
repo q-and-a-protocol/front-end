@@ -3,7 +3,12 @@ import { useAccount, useEnsName } from 'wagmi';
 import { useQuery, gql } from '@apollo/client';
 import { Link as RouterLink } from 'react-router-dom';
 import * as ethers from 'ethers';
-import { CheckIcon, ChatBubbleLeftRightIcon, CheckBadgeIcon } from '@heroicons/react/20/solid';
+import {
+  CheckIcon,
+  ChatBubbleLeftRightIcon,
+  CheckBadgeIcon,
+  XMarkIcon,
+} from '@heroicons/react/20/solid';
 import Tooltip from '@mui/material/Tooltip';
 
 function classNames(...classes) {
@@ -33,6 +38,8 @@ const GET_MY_QUESTIONS_WHEN_ANSWERER = gql`
       answered
       question
       answer
+      expiryDate
+      expired
     }
   }
 `;
@@ -49,6 +56,8 @@ const GET_MY_QUESTIONS_WHEN_QUESTIONER = gql`
       answered
       question
       answer
+      expiryDate
+      expired
     }
   }
 `;
@@ -119,9 +128,14 @@ export function MyQuestions() {
               question: e.question,
               to: '/question/',
               toProfile: '/profile/',
-              date: !isToday(date) ? getExtraDate + time : time,
-              icon: e.answered ? CheckIcon : ChatBubbleLeftRightIcon,
-              iconBackground: e.answered ? 'bg-green-600' : 'bg-indigo-600',
+              date: e.expired ? 'Canceled / Expired' : !isToday(date) ? getExtraDate + time : time,
+              expired: e.expired,
+              icon: e.expired ? XMarkIcon : e.answered ? CheckIcon : ChatBubbleLeftRightIcon,
+              iconBackground: e.expired
+                ? 'bg-red-600'
+                : e.answered
+                ? 'bg-green-600'
+                : 'bg-indigo-600',
               bounty: e.bounty,
               sourceHasAskedAnswered:
                 userMapping[e.questioner]?.hasAsked || userMapping[e.questioner]?.hasAnswered,
@@ -159,9 +173,14 @@ export function MyQuestions() {
               question: e.question,
               to: '/question/',
               toProfile: '/profile/',
-              date: !isToday(date) ? getExtraDate + time : time,
-              icon: e.answered ? CheckIcon : ChatBubbleLeftRightIcon,
-              iconBackground: e.answered ? 'bg-green-600' : 'bg-indigo-600',
+              date: e.expired ? 'Canceled / Expired' : !isToday(date) ? getExtraDate + time : time,
+              expired: e.expired,
+              icon: e.expired ? XMarkIcon : e.answered ? CheckIcon : ChatBubbleLeftRightIcon,
+              iconBackground: e.expired
+                ? 'bg-red-600'
+                : e.answered
+                ? 'bg-green-600'
+                : 'bg-indigo-600',
               bounty: e.bounty,
               sourceHasAskedAnswered:
                 userMapping[e.questioner]?.hasAsked || userMapping[e.questioner]?.hasAnswered,
