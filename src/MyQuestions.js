@@ -75,19 +75,10 @@ const GET_ALL_USERS = gql`
 `;
 
 export function MyQuestions() {
+  const provider = ethers.getDefaultProvider();
   const { address: myAddress } = useAccount();
-  const { data: ensName } = useEnsName();
   const [userMapping, setUserMapping] = useState({});
-
-  function formatAddress(address) {
-    let result;
-    if (myAddress && ethers.utils.getAddress(address) == ethers.utils.getAddress(myAddress)) {
-      return 'You';
-    }
-    const formattedAddress = address.slice(0, 6) + '...' + address.slice(-4);
-    result = ensName ? ensName : formattedAddress;
-    return result;
-  }
+  const [formattedAddresses, setFormattedAddresses] = useState({});
 
   const { data: myQuestionsWhenAnswerer } = useQuery(GET_MY_QUESTIONS_WHEN_ANSWERER, {
     variables: { address: myAddress },
@@ -193,6 +184,57 @@ export function MyQuestions() {
   }, [myQuestionsWhenQuestioner, userMapping]);
 
   useEffect(() => {
+    if (!myQuestionsWhenQuestioner || !myQuestionsWhenQuestioner.newsfeedEvents) return;
+    else {
+      async function formatAddress(address) {
+        let result;
+        if (myAddress && ethers.utils.getAddress(address) == ethers.utils.getAddress(myAddress)) {
+          return 'You';
+        }
+        const ensName = await provider.lookupAddress(address);
+        const formattedAddress = address.slice(0, 6) + '...' + address.slice(-4);
+        result = ensName ? ensName : formattedAddress;
+        return result;
+      }
+
+      myQuestionsWhenQuestioner.newsfeedEvents.forEach((e) => {
+        formatAddress(e.answerer).then((result) => {
+          setFormattedAddresses((prevState) => ({ ...prevState, [e.answerer]: result }));
+        });
+        formatAddress(e.questioner).then((result) => {
+          setFormattedAddresses((prevState) => ({ ...prevState, [e.questioner]: result }));
+        });
+      });
+    }
+  }, [myQuestionsWhenQuestioner]);
+
+  useEffect(() => {
+    if (!myQuestionsWhenAnswerer || !myQuestionsWhenAnswerer.newsfeedEvents) return;
+    else {
+      async function formatAddress(address) {
+        let result;
+        if (myAddress && ethers.utils.getAddress(address) == ethers.utils.getAddress(myAddress)) {
+          return 'You';
+        }
+
+        const ensName = await provider.lookupAddress(address);
+        const formattedAddress = address.slice(0, 6) + '...' + address.slice(-4);
+        result = ensName ? ensName : formattedAddress;
+        return result;
+      }
+
+      myQuestionsWhenAnswerer.newsfeedEvents.forEach((e) => {
+        formatAddress(e.answerer).then((result) => {
+          setFormattedAddresses((prevState) => ({ ...prevState, [e.answerer]: result }));
+        });
+        formatAddress(e.questioner).then((result) => {
+          setFormattedAddresses((prevState) => ({ ...prevState, [e.questioner]: result }));
+        });
+      });
+    }
+  }, [myQuestionsWhenAnswerer]);
+
+  useEffect(() => {
     if (!allUsers) setUserMapping({});
     else if (!allUsers.users) setUserMapping({});
     else {
@@ -265,7 +307,7 @@ export function MyQuestions() {
                                           to={event.toProfile + event.source}
                                           className='font-medium text-gray-900 pr-2 flex flex-row items-center'
                                         >
-                                          {formatAddress(event.source)}
+                                          {formattedAddresses[event.source] || 'Loading...'}
                                           {event.sourceHasAskedAnswered ? (
                                             <Tooltip title='Verified! This user has asked or answered a question recently.'>
                                               <CheckBadgeIcon
@@ -280,7 +322,7 @@ export function MyQuestions() {
                                           to={event.toProfile + event.target}
                                           className='font-medium text-gray-900 mx-2 flex flex-row items-center'
                                         >
-                                          {formatAddress(event.target)}
+                                          {formattedAddresses[event.target] || 'Loading...'}
                                           {event.targetHasAskedAnswered ? (
                                             <Tooltip title='Verified! This user has asked or answered a question recently.'>
                                               <CheckBadgeIcon
@@ -368,7 +410,7 @@ export function MyQuestions() {
                                           to={event.toProfile + event.source}
                                           className='font-medium text-gray-900 pr-2 flex flex-row items-center'
                                         >
-                                          {formatAddress(event.source)}
+                                          {formattedAddresses[event.source] || 'Loading...'}
                                           {event.sourceHasAskedAnswered ? (
                                             <Tooltip title='Verified! This user has asked or answered a question recently.'>
                                               <CheckBadgeIcon
@@ -383,7 +425,7 @@ export function MyQuestions() {
                                           to={event.toProfile + event.target}
                                           className='font-medium text-gray-900 mx-2 flex flex-row items-center'
                                         >
-                                          {formatAddress(event.target)}
+                                          {formattedAddresses[event.target] || 'Loading...'}
                                           {event.targetHasAskedAnswered ? (
                                             <Tooltip title='Verified! This user has asked or answered a question recently.'>
                                               <CheckBadgeIcon

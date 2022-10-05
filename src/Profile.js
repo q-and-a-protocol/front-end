@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useContractWrite, useNetwork, useEnsName, useContractRead, useAccount } from 'wagmi';
+import { useContractWrite, useNetwork, useContractRead, useAccount } from 'wagmi';
 import QuestionAndAnswerABI from './constants/QuestionAndAnswer.json';
 import ExampleERC20ABI from './constants/ExampleERC20.json';
 import * as ethers from 'ethers';
@@ -26,9 +26,10 @@ function convertExpiryDate(expiryString) {
 }
 
 export function Profile() {
-  const { address: userAddress, isDisconnected } = useAccount();
+  const provider = ethers.getDefaultProvider();
+  const { address: myAddress, isDisconnected } = useAccount();
   const { address } = useParams();
-  const { data: ensName } = useEnsName();
+  const [formattedAddress, setFormattedAddress] = useState('Loading...');
   const [question, setQuestion] = useState('');
   const [bounty, setBounty] = useState('5');
   const [recommendedBounty, setRecommendedBounty] = useState(5);
@@ -58,10 +59,22 @@ export function Profile() {
     });
   }
 
-  function formatAddress(address) {
-    const formattedAddress = address.slice(0, 6) + '...' + address.slice(-4);
-    return ensName ? ensName : formattedAddress;
-  }
+  useEffect(() => {
+    async function formatAddress(address) {
+      let result;
+      if (myAddress && ethers.utils.getAddress(address) == ethers.utils.getAddress(myAddress)) {
+        return 'You';
+      }
+      const ensName = await provider.lookupAddress(address);
+      const formattedAddress = address.slice(0, 6) + '...' + address.slice(-4);
+      result = ensName ? ensName : formattedAddress;
+      return result;
+    }
+
+    formatAddress(address).then((result) => {
+      setFormattedAddress(result);
+    });
+  }, [address]);
 
   const { data: newData } = useContractRead({
     addressOrName: QuestionAndAnswerAddress,
@@ -102,9 +115,9 @@ export function Profile() {
     <div className='mx-auto max-w-7xl px-4 pt-4'>
       {isDisconnected ? (
         <div className='py-4 px-4 text-center'>Please connect your wallet to see this page!</div>
-      ) : userAddress &&
+      ) : myAddress &&
         address &&
-        ethers.utils.getAddress(userAddress) == ethers.utils.getAddress(address) ? (
+        ethers.utils.getAddress(myAddress) == ethers.utils.getAddress(address) ? (
         <div className='py-4 px-4 text-center'>You cannot ask yourself a question!</div>
       ) : (
         <div className='md:grid md:grid-cols-3 md:gap-6 bg-slate-50 py-4 px-4 rounded-lg'>
@@ -113,13 +126,13 @@ export function Profile() {
               <h3 className='text-lg font-medium leading-6 text-gray-900'>
                 Ask{' '}
                 <span className='underline underline-offset-4 decoration-blue-800 font-bold'>
-                  {formatAddress(address)}
+                  {formattedAddress || 'Loading...'}
                 </span>{' '}
                 a question:
               </h3>
               <p className='mt-1 text-sm text-gray-600'>
-                Here are some guidelines {formatAddress(address)} has set, follow them to get your
-                question answered!
+                Here are some guidelines {formattedAddress || 'Loading...'} has set, follow them to
+                get your question answered!
               </p>
               <div className='mt-5 text-lg font-semibold'>
                 <p className=''>
@@ -128,8 +141,8 @@ export function Profile() {
                   </span>{' '}
                   {recommendedBounty === 0 ? (
                     <span className='font-normal'>
-                      {formatAddress(address)} has not set a minimum price! We'd recommend at least
-                      $5.
+                      {formattedAddress || 'Loading...'} has not set a minimum price! We'd recommend
+                      at least $5.
                     </span>
                   ) : (
                     <span className='font-bold text-green-600'>${recommendedBounty}</span>
@@ -139,7 +152,7 @@ export function Profile() {
                 <p className='underline underline-offset-4 decoration-blue-800'>Interests: </p>
                 {interests === '' ? (
                   <p className='text-md font-normal'>
-                    {formatAddress(address)} hasn't set any interests, ask them anything!
+                    {formattedAddress || 'Loading...'} hasn't set any interests, ask them anything!
                   </p>
                 ) : (
                   <p className='text-md font-normal'>{interests}</p>

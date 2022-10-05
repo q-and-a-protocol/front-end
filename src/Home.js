@@ -1,4 +1,4 @@
-import { useAccount, useEnsName } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
@@ -65,7 +65,6 @@ export function Home() {
   const [timeline, setTimeline] = useState([]);
   const [userMapping, setUserMapping] = useState({});
   const [formattedAddresses, setFormattedAddresses] = useState({});
-  const [tempObjectForNamingIssues, setTempObjectForNamingIssues] = useState({});
 
   useEffect(() => {
     if (!allQuestions) {
@@ -111,8 +110,7 @@ export function Home() {
   }, [allQuestions, userMapping]);
 
   useEffect(() => {
-    if (!allQuestions) setFormattedAddresses({});
-    else if (!allQuestions.newsfeedEvents) setFormattedAddresses({});
+    if (!allQuestions || !allQuestions.newsfeedEvents) return;
     else {
       async function formatAddress(address) {
         let result;
@@ -125,18 +123,14 @@ export function Home() {
         return result;
       }
 
-      const mapping = {};
       allQuestions.newsfeedEvents.forEach((e) => {
-        mapping[e.answerer] = 'Loading...';
-        mapping[e.questioner] = 'Loading...';
         formatAddress(e.answerer).then((result) => {
-          setTempObjectForNamingIssues((prevState) => ({ ...prevState, [e.answerer]: result }));
+          setFormattedAddresses((prevState) => ({ ...prevState, [e.answerer]: result }));
         });
         formatAddress(e.questioner).then((result) => {
-          setTempObjectForNamingIssues((prevState) => ({ ...prevState, [e.questioner]: result }));
+          setFormattedAddresses((prevState) => ({ ...prevState, [e.questioner]: result }));
         });
       });
-      setFormattedAddresses(mapping);
     }
   }, [allQuestions]);
 
@@ -208,7 +202,7 @@ export function Home() {
                             to={event.to + event.source}
                             className='font-medium text-gray-900 pr-2 flex flex-row items-center'
                           >
-                            {tempObjectForNamingIssues[event.source] || 'Loading...'}
+                            {formattedAddresses[event.source] || 'Loading...'}
                             {event.sourceHasAskedAnswered ? (
                               <Tooltip title='Verified! This user has asked or answered a question recently.'>
                                 <CheckBadgeIcon
@@ -223,7 +217,7 @@ export function Home() {
                             to={event.to + event.target}
                             className='font-medium text-gray-900 ml-2 flex flex-row items-center'
                           >
-                            {tempObjectForNamingIssues[event.target] || 'Loading...'}
+                            {formattedAddresses[event.target] || 'Loading...'}
                             {event.targetHasAskedAnswered ? (
                               <Tooltip title='Verified! This user has asked or answered a question recently.'>
                                 <CheckBadgeIcon
