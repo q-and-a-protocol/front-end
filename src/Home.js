@@ -60,25 +60,19 @@ export function Home() {
   const [inputAddress, setInputAddress] = useState('');
   const { data: allQuestions } = useQuery(GET_ALL_QUESTIONS);
   const { data: allUsers } = useQuery(GET_ALL_USERS);
-  const { data: ensName } = useEnsName();
+  const provider = ethers.getDefaultProvider();
 
   const [timeline, setTimeline] = useState([]);
   const [userMapping, setUserMapping] = useState({});
-
-  function formatAddress(address) {
-    let result;
-    if (myAddress && ethers.utils.getAddress(address) == ethers.utils.getAddress(myAddress)) {
-      return 'You';
-    }
-    const formattedAddress = address.slice(0, 6) + '...' + address.slice(-4);
-    result = ensName ? ensName : formattedAddress;
-    return result;
-  }
+  const [formattedAddresses, setFormattedAddresses] = useState({});
+  const [tempObjectForNamingIssues, setTempObjectForNamingIssues] = useState({});
 
   useEffect(() => {
-    if (!allQuestions) setTimeline([]);
-    else if (!allQuestions.newsfeedEvents) setTimeline([]);
-    else {
+    if (!allQuestions) {
+      setTimeline([]);
+    } else if (!allQuestions.newsfeedEvents) {
+      setTimeline([]);
+    } else {
       setTimeline(
         allQuestions?.newsfeedEvents
           ?.slice()
@@ -115,6 +109,36 @@ export function Home() {
       );
     }
   }, [allQuestions, userMapping]);
+
+  useEffect(() => {
+    if (!allQuestions) setFormattedAddresses({});
+    else if (!allQuestions.newsfeedEvents) setFormattedAddresses({});
+    else {
+      async function formatAddress(address) {
+        let result;
+        if (myAddress && ethers.utils.getAddress(address) == ethers.utils.getAddress(myAddress)) {
+          return 'You';
+        }
+        const ensName = await provider.lookupAddress(address);
+        const formattedAddress = address.slice(0, 6) + '...' + address.slice(-4);
+        result = ensName ? ensName : formattedAddress;
+        return result;
+      }
+
+      const mapping = {};
+      allQuestions.newsfeedEvents.forEach((e) => {
+        mapping[e.answerer] = 'Loading...';
+        mapping[e.questioner] = 'Loading...';
+        formatAddress(e.answerer).then((result) => {
+          setTempObjectForNamingIssues((prevState) => ({ ...prevState, [e.answerer]: result }));
+        });
+        formatAddress(e.questioner).then((result) => {
+          setTempObjectForNamingIssues((prevState) => ({ ...prevState, [e.questioner]: result }));
+        });
+      });
+      setFormattedAddresses(mapping);
+    }
+  }, [allQuestions]);
 
   useEffect(() => {
     if (!allUsers) setUserMapping({});
@@ -184,7 +208,7 @@ export function Home() {
                             to={event.to + event.source}
                             className='font-medium text-gray-900 pr-2 flex flex-row items-center'
                           >
-                            {formatAddress(event.source)}
+                            {tempObjectForNamingIssues[event.source] || 'Loading...'}
                             {event.sourceHasAskedAnswered ? (
                               <Tooltip title='Verified! This user has asked or answered a question recently.'>
                                 <CheckBadgeIcon
@@ -199,7 +223,7 @@ export function Home() {
                             to={event.to + event.target}
                             className='font-medium text-gray-900 ml-2 flex flex-row items-center'
                           >
-                            {formatAddress(event.target)}
+                            {tempObjectForNamingIssues[event.target] || 'Loading...'}
                             {event.targetHasAskedAnswered ? (
                               <Tooltip title='Verified! This user has asked or answered a question recently.'>
                                 <CheckBadgeIcon

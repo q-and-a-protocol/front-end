@@ -1,7 +1,8 @@
 import { Link as RouterLink } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePrepareContractWrite, useContractWrite, useNetwork } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
+import * as ethers from 'ethers';
 import ExampleERC20ABI from './constants/ExampleERC20.json';
 import networkMapping from './constants/networkMapping.json';
 
