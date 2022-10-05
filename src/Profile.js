@@ -26,7 +26,7 @@ function convertExpiryDate(expiryString) {
 }
 
 export function Profile() {
-  const { address: userAddress } = useAccount();
+  const { address: userAddress, isDisconnected } = useAccount();
   const { address } = useParams();
   const { data: ensName } = useEnsName();
   const [question, setQuestion] = useState('');
@@ -35,11 +35,9 @@ export function Profile() {
   const [interests, setInterests] = useState('');
   const [expiryDate, setExpiryDate] = useState('Never');
   const [approveAttempted, setApproveAttempted] = useState(false);
-  const {
-    chain: { id: chainId },
-  } = useNetwork();
-  const QuestionAndAnswerAddress = networkMapping[chainId]?.QuestionAndAnswer[0];
-  const ExampleERC20Address = networkMapping[chainId]?.ExampleERC20[0];
+  const { chain } = useNetwork();
+  const QuestionAndAnswerAddress = networkMapping[chain?.id || 80001]?.QuestionAndAnswer[0];
+  const ExampleERC20Address = networkMapping[chain?.id || 80001]?.ExampleERC20[0];
 
   const { write } = useContractWrite({
     mode: 'recklesslyUnprepared',
@@ -102,7 +100,11 @@ export function Profile() {
 
   return (
     <div className='mx-auto max-w-7xl px-4 pt-4'>
-      {ethers.utils.getAddress(userAddress) == ethers.utils.getAddress(address) ? (
+      {isDisconnected ? (
+        <div className='py-4 px-4 text-center'>Please connect your wallet to see this page!</div>
+      ) : userAddress &&
+        address &&
+        ethers.utils.getAddress(userAddress) == ethers.utils.getAddress(address) ? (
         <div className='py-4 px-4 text-center'>You cannot ask yourself a question!</div>
       ) : (
         <div className='md:grid md:grid-cols-3 md:gap-6 bg-slate-50 py-4 px-4 rounded-lg'>
