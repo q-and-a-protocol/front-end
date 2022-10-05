@@ -77,7 +77,6 @@ export function Home() {
   }
 
   useEffect(() => {
-    console.log(allQuestions);
     if (!allQuestions) setTimeline([]);
     else if (!allQuestions.newsfeedEvents) setTimeline([]);
     else {

@@ -8,11 +8,21 @@ import * as ethers from 'ethers';
 import networkMapping from './constants/networkMapping.json';
 import Tooltip from '@mui/material/Tooltip';
 
-function getDefaultExpiry() {
+function convertExpiryDate(expiryString) {
+  const splitExpiryString = expiryString.split(' ');
   const date = new Date();
-  date.setDate(date.getDate() + 7);
-  return date.getTime();
-  // return Math.floor(expiryDate.getTime() / 1000);
+  if (splitExpiryString.length == 1) {
+    date.setFullYear(2037);
+  } else if (splitExpiryString[1] == 'day') {
+    date.setDate(date.getDate() + 1);
+  } else if (splitExpiryString[1] == 'days') {
+    if (splitExpiryString[0] == '7') date.setDate(date.getDate() + 7);
+    else if (splitExpiryString[0] == '30') date.setDate(date.getDate() + 30);
+  } else if (splitExpiryString[1] == 'year') {
+    date.setFullYear(date.getFullYear() + 1);
+  }
+
+  return Math.floor(date.getTime() / 1000).toString();
 }
 
 export function Profile() {
@@ -23,7 +33,8 @@ export function Profile() {
   const [bounty, setBounty] = useState('5');
   const [recommendedBounty, setRecommendedBounty] = useState(5);
   const [interests, setInterests] = useState('');
-  const [expiryDate, setExpiryDate] = useState(getDefaultExpiry());
+  const [expiryDate, setExpiryDate] = useState('Never');
+  const [approveAttempted, setApproveAttempted] = useState(false);
   const {
     chain: { id: chainId },
   } = useNetwork();
@@ -44,7 +55,7 @@ export function Profile() {
         question,
         address,
         ethers.utils.parseUnits(bounty).toString(),
-        Math.floor(expiryDate / 1000),
+        convertExpiryDate(expiryDate),
       ],
     });
   }
@@ -65,7 +76,7 @@ export function Profile() {
     if (newData) {
       const formatted = Number(ethers.utils.formatEther(newData.priceMinimum.toString()));
       setRecommendedBounty(formatted);
-      setBounty(formatted);
+      setBounty(formatted.toString());
       setInterests(newData.interests);
     }
   }, [newData]);
@@ -75,6 +86,9 @@ export function Profile() {
     addressOrName: ExampleERC20Address,
     contractInterface: ExampleERC20ABI,
     functionName: 'increaseAllowance',
+    onSuccess() {
+      setApproveAttempted(true);
+    },
   });
 
   function handleApprovePrice() {
@@ -158,8 +172,8 @@ export function Profile() {
                 </div>
               </div>
 
-              <div className='grid gap-6'>
-                <div className='col-span-1'>
+              <div className='flex flex-row'>
+                <div className='w-1/2'>
                   <label htmlFor='bounty' className='block text-sm font-medium text-gray-700'>
                     Price
                   </label>
@@ -174,11 +188,31 @@ export function Profile() {
                       value={bounty}
                       onChange={(e) => setBounty(e.target.value)}
                       className='block flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-md'
-                      placeholder='5'
                     />
                   </div>
                   <p className='mt-2 text-sm text-gray-500'>
                     Set a price you're willing to pay to have the question answered.
+                  </p>
+                </div>
+                <div className='w-1/2'>
+                  <label htmlFor='expiryDate' className='block text-sm font-medium text-gray-700'>
+                    Expiry Date
+                  </label>
+                  <select
+                    id='expiryDate'
+                    name='expiryDate'
+                    className='mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm'
+                    value={expiryDate}
+                    onChange={(e) => setExpiryDate(e.target.value)}
+                  >
+                    <option>1 day</option>
+                    <option>7 days</option>
+                    <option>30 days</option>
+                    <option>1 year</option>
+                    <option>Never</option>
+                  </select>
+                  <p className='mt-2 text-sm text-gray-500'>
+                    Set a time limit! Modify when the question expires.
                   </p>
                 </div>
               </div>
@@ -201,7 +235,10 @@ export function Profile() {
                   <Tooltip title={'Step 2: Post your question onto the blockchain!'}>
                     <button
                       type='submit'
-                      className='ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                      className={`ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                        approveAttempted ? '' : 'bg-gray-300 hover:bg-gray-300 '
+                      }`}
+                      disabled={!approveAttempted}
                     >
                       Ask Question
                     </button>
