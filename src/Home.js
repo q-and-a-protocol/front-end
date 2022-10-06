@@ -172,7 +172,7 @@ export function Home() {
               ...prevState,
               [e.answerer]: {
                 questionCount: 0,
-                answerCount: 1,
+                answerCount: e.answered ? 1 : 0,
               },
             };
           } else {
@@ -180,7 +180,7 @@ export function Home() {
               ...prevState,
               [e.answerer]: {
                 ...prevState[e.answerer],
-                answerCount: prevState[e.answerer].answerCount + 1,
+                answerCount: prevState[e.answerer].answerCount + (e.answered ? 1 : 0),
               },
             };
           }
@@ -268,12 +268,15 @@ export function Home() {
                                 <Typography color='inherit'>
                                   Answered: {count[event.source].answerCount} Questions
                                 </Typography>
-                                <Typography color='inherit'>Verified: Yes</Typography>
+                                <Typography color='inherit'>
+                                  Verified: {event.sourceHasAskedAnswered ? 'Yes' : 'No'}
+                                </Typography>
                                 <br />
                                 What does all of this mean? This user has <b>asked</b>{' '}
                                 {count[event.source].questionCount} questions and <b>answered</b>{' '}
-                                {count[event.source].answerCount} questions. They are verified
-                                because they were active recently.
+                                {count[event.source].answerCount} questions. They are{' '}
+                                {event.sourceHasAskedAnswered ? '' : 'not'}verified because they
+                                were active recently.
                               </React.Fragment>
                             }
                           >
@@ -291,20 +294,42 @@ export function Home() {
                             </RouterLink>
                           </HtmlTooltip>
                           {event.content}{' '}
-                          <RouterLink
-                            to={event.to + event.target}
-                            className='font-medium text-gray-900 ml-2 flex flex-row items-center'
+                          <HtmlTooltip
+                            title={
+                              <React.Fragment>
+                                <Typography color='inherit'>
+                                  Asked: {count[event.target].questionCount} Questions
+                                </Typography>
+                                <Typography color='inherit'>
+                                  Answered: {count[event.target].answerCount} Questions
+                                </Typography>
+                                <Typography color='inherit'>
+                                  Verified: {event.targetHasAskedAnswered ? 'Yes' : 'No'}
+                                </Typography>
+                                <br />
+                                What does all of this mean? This user has <b>asked</b>{' '}
+                                {count[event.target].questionCount} questions and <b>answered</b>{' '}
+                                {count[event.target].answerCount} questions. They are{' '}
+                                {event.targetHasAskedAnswered ? '' : 'not '}verified because they
+                                were {event.targetHasAskedAnswered ? '' : ' not '} active recently.
+                              </React.Fragment>
+                            }
                           >
-                            {formattedAddresses[event.target] || 'Loading...'}
-                            {event.targetHasAskedAnswered ? (
-                              <Tooltip title='Verified! This user has asked or answered a question recently.'>
-                                <CheckBadgeIcon
-                                  className='inline h-4 w-4 text-green-600 ml-1'
-                                  aria-hidden='true'
-                                />
-                              </Tooltip>
-                            ) : null}
-                          </RouterLink>
+                            <RouterLink
+                              to={event.to + event.target}
+                              className='font-medium text-gray-900 ml-2 flex flex-row items-center'
+                            >
+                              {formattedAddresses[event.target] || 'Loading...'}
+                              {event.targetHasAskedAnswered ? (
+                                <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                                  <CheckBadgeIcon
+                                    className='inline h-4 w-4 text-green-600 ml-1'
+                                    aria-hidden='true'
+                                  />
+                                </Tooltip>
+                              ) : null}
+                            </RouterLink>
+                          </HtmlTooltip>
                         </p>
                       </div>
                       <div className='whitespace-nowrap text-right text-sm text-gray-500'>
