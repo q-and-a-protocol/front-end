@@ -7,6 +7,7 @@ import { MyAnswers } from './MyAnswers';
 import { Profile } from './Profile';
 import { MyProfile } from './MyProfile';
 import { NotFoundScreen } from './NotFoundScreen';
+import { Help } from './Help';
 import { Utilities } from './Utilities';
 import { Question } from './Question';
 
@@ -20,6 +21,7 @@ function AppRoutes() {
       <Route path='/myanswers' element={<MyAnswers />} />
       <Route path='/profile/:address' element={<Profile />} />
       <Route path='/myprofile' element={<MyProfile />} />
+      <Route path='/help' element={<Help />} />
       <Route path='/utilities' element={<Utilities />} />
       <Route path='/question/:questioner/:answerer/:index' element={<Question />} />
       <Route path='*' element={<NotFoundScreen />} />
