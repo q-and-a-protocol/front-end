@@ -1,4 +1,4 @@
-import { useAccount } from 'wagmi';
+import { useAccount, useEnsName } from 'wagmi';
 import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
@@ -201,12 +201,6 @@ export function Home() {
     }
   }, [allUsers]);
 
-  useEffect(() => {
-    console.log(count);
-  }, [count]);
-
-  // <Tooltip title='Verified! This user has asked or answered a question recently.'></Tooltip>
-
   return (
     <div className='bg-white sm:rounded-lg '>
       <div className='px-4 py-5 sm:p-6 '>
@@ -263,18 +257,18 @@ export function Home() {
                             title={
                               <React.Fragment>
                                 <Typography color='inherit'>
-                                  Asked: {count[event.source].questionCount} Questions
+                                  Asked: {count[event.source]?.questionCount} Questions
                                 </Typography>
                                 <Typography color='inherit'>
-                                  Answered: {count[event.source].answerCount} Questions
+                                  Answered: {count[event.source]?.answerCount} Questions
                                 </Typography>
                                 <Typography color='inherit'>
                                   Verified: {event.sourceHasAskedAnswered ? 'Yes' : 'No'}
                                 </Typography>
                                 <br />
                                 What does all of this mean? This user has <b>asked</b>{' '}
-                                {count[event.source].questionCount} questions and <b>answered</b>{' '}
-                                {count[event.source].answerCount} questions. They are{' '}
+                                {count[event.source]?.questionCount} questions and <b>answered</b>{' '}
+                                {count[event.source]?.answerCount} questions. They are{' '}
                                 {event.sourceHasAskedAnswered ? '' : 'not'}verified because they
                                 were active recently.
                               </React.Fragment>
@@ -298,18 +292,18 @@ export function Home() {
                             title={
                               <React.Fragment>
                                 <Typography color='inherit'>
-                                  Asked: {count[event.target].questionCount} Questions
+                                  Asked: {count[event.target]?.questionCount} Questions
                                 </Typography>
                                 <Typography color='inherit'>
-                                  Answered: {count[event.target].answerCount} Questions
+                                  Answered: {count[event.target]?.answerCount} Questions
                                 </Typography>
                                 <Typography color='inherit'>
                                   Verified: {event.targetHasAskedAnswered ? 'Yes' : 'No'}
                                 </Typography>
                                 <br />
                                 What does all of this mean? This user has <b>asked</b>{' '}
-                                {count[event.target].questionCount} questions and <b>answered</b>{' '}
-                                {count[event.target].answerCount} questions. They are{' '}
+                                {count[event.target]?.questionCount} questions and <b>answered</b>{' '}
+                                {count[event.target]?.answerCount} questions. They are{' '}
                                 {event.targetHasAskedAnswered ? '' : 'not '}verified because they
                                 were {event.targetHasAskedAnswered ? '' : ' not '} active recently.
                               </React.Fragment>

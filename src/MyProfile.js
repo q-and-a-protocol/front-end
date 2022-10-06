@@ -63,7 +63,7 @@ export function MyProfile() {
         <div className='py-4 px-4 text-center'>Please connect your wallet to see this page!</div>
       ) : (
         <div>
-          <div className='md:grid md:grid-cols-3 md:gap-6 bg-slate-50 py-4 px-4 rounded-lg'>
+          <div className='md:grid md:grid-cols-3 md:gap-6 bg-slate-50 py-5 px-5 rounded-lg'>
             <div className='md:col-span-1'>
               <div className='px-4 sm:px-0'>
                 <h3 className='text-lg font-medium leading-6 text-gray-900'>Update Profile</h3>
@@ -140,7 +140,7 @@ export function MyProfile() {
               <div className='border-t border-gray-200' />
             </div>
           </div>
-          <div className='md:grid md:grid-cols-3 md:gap-6 bg-slate-50 py-4 px-4 rounded-lg'>
+          <div className='md:grid md:grid-cols-3 md:gap-6 bg-slate-50 py-5 px-5 rounded-lg'>
             <div className='md:col-span-1'>
               <div className='px-4 sm:px-0'>
                 <h3 className='text-lg font-medium leading-6 text-gray-900'>Account Finances</h3>
