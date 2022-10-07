@@ -90,8 +90,6 @@ export function Header() {
             </NavLink>
           </Popover.Group>
           <div className='hidden items-center justify-end md:flex md:flex-1 lg:w-0'>
-            {/* {chain && <div>Connected to {chain.name}</div>} */}
-            {/* {chains && <div>Available chains: {chains.map((chain) => chain.name)}</div>} */}
             <ConnectButton accountStatus={'address'} />
           </div>
         </div>

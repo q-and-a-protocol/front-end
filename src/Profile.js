@@ -99,7 +99,7 @@ export function Profile() {
         return 'You';
       }
       const ensName = await provider.lookupAddress(address);
-      const formattedAddress = address.slice(0, 6) + '...' + address.slice(-4);
+      const formattedAddress = address.slice(0, 4) + '...' + address.slice(-4);
       result = ensName ? ensName : formattedAddress;
       return result;
     }
