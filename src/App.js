@@ -25,7 +25,8 @@ function AppRoutes() {
       <Route path='/help' element={<Help />} />
       <Route path='/utilities' element={<Utilities />} />
       <Route path='/question/:questioner/:answerer/:index' element={<Question />} />
-      <Route path='*' element={<NotFoundScreen />} />
+      <Route path='/notfound' element={<NotFoundScreen />} />
+      <Route path='/*' element={<NotFoundScreen />} />
     </Routes>
   );
 }
