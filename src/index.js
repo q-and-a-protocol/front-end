@@ -4,7 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-import { WagmiConfig, createClient, allChains, defaultChains, configureChains } from 'wagmi';
+import { getDefaultWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { WagmiConfig, createClient, allChains, defaultChains, configureChains, chain } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 
@@ -20,35 +21,42 @@ const apolloClient = new ApolloClient({
   uri: process.env.REACT_APP_THE_GRAPH_HTTP,
 });
 
-const { chains, provider, webSocketProvider } = configureChains(allChains, [
-  alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_API_KEY }),
-  publicProvider(),
-]);
+const { chains, provider, webSocketProvider } = configureChains(
+  [chain.polygonMumbai],
+  // chain.polygon,
+  [alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_API_KEY }), publicProvider()]
+);
+
+const { connectors } = getDefaultWallets({
+  appName: 'Question & Answer Protocol',
+  chains,
+});
 
 const client = createClient({
   autoConnect: true,
-  connectors: [
-    new MetaMaskConnector({ chains }),
-    new CoinbaseWalletConnector({
-      chains,
-      options: {
-        appName: 'wagmi',
-      },
-    }),
-    new WalletConnectConnector({
-      chains,
-      options: {
-        qrcode: true,
-      },
-    }),
-    new InjectedConnector({
-      chains,
-      options: {
-        name: 'Injected',
-        shimDisconnect: true,
-      },
-    }),
-  ],
+  connectors,
+  // connectors: [
+  //   new MetaMaskConnector({ chains }),
+  //   new CoinbaseWalletConnector({
+  //     chains,
+  //     options: {
+  //       appName: 'wagmi',
+  //     },
+  //   }),
+  //   new WalletConnectConnector({
+  //     chains,
+  //     options: {
+  //       qrcode: true,
+  //     },
+  //   }),
+  //   new InjectedConnector({
+  //     chains,
+  //     options: {
+  //       name: 'Injected',
+  //       shimDisconnect: true,
+  //     },
+  //   }),
+  // ],
   provider,
   webSocketProvider,
 });
@@ -57,9 +65,17 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <WagmiConfig client={client}>
-      <ApolloProvider client={apolloClient}>
-        <App />
-      </ApolloProvider>
+      <RainbowKitProvider
+        chains={chains}
+        showRecentTransactions={true}
+        theme={lightTheme({
+          accentColor: '#4f46e5',
+        })}
+      >
+        <ApolloProvider client={apolloClient}>
+          <App />
+        </ApolloProvider>
+      </RainbowKitProvider>
     </WagmiConfig>
   </React.StrictMode>
 );

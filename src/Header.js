@@ -1,10 +1,11 @@
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { useAccount, useConnect, useDisconnect, useNetwork } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 
 import { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { BrowserRouter as Router, Link as RouterLink, useMatch } from 'react-router-dom';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -23,6 +24,7 @@ export function Header() {
   });
   const { disconnect } = useDisconnect();
   const connectBGColor = isConnected ? 'bg-rose-400' : 'bg-indigo-600';
+  const { chain, chains } = useNetwork();
 
   function toggleWallet() {
     if (isConnected) {
@@ -63,6 +65,14 @@ export function Header() {
             <NavLink to='/' className='text-base font-medium text-gray-600 hover:text-gray-900'>
               Home
             </NavLink>
+            {isConnected ? (
+              <NavLink
+                to='/myprofile'
+                className='text-base font-medium text-gray-600 hover:text-gray-900'
+              >
+                Profile
+              </NavLink>
+            ) : null}
             <NavLink
               to='/myquestions'
               className='text-base font-medium text-gray-600 hover:text-gray-900'
@@ -80,26 +90,9 @@ export function Header() {
             </NavLink>
           </Popover.Group>
           <div className='hidden items-center justify-end md:flex md:flex-1 lg:w-0'>
-            {isConnected ? (
-              <RouterLink to='/myprofile' className='flex items-center'>
-                <span className='inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100 border border-solid border-gray-200'>
-                  <svg
-                    className='h-full w-full text-gray-300'
-                    fill='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path d='M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z' />
-                  </svg>
-                </span>
-              </RouterLink>
-            ) : null}
-            <a
-              href='#'
-              className={`ml-8 inline-flex items-center justify-center whitespace-nowrap ${connectBGColor} rounded-md border border-transparent  px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700`}
-              onClick={() => toggleWallet()}
-            >
-              {isConnected ? 'Disconnect' : 'Connect Wallet'}
-            </a>
+            {/* {chain && <div>Connected to {chain.name}</div>} */}
+            {/* {chains && <div>Available chains: {chains.map((chain) => chain.name)}</div>} */}
+            <ConnectButton accountStatus={'address'} />
           </div>
         </div>
       </div>

@@ -12,6 +12,7 @@ import { Utilities } from './Utilities';
 import { Question } from './Question';
 
 import './App.css';
+import '@rainbow-me/rainbowkit/styles.css';
 
 function AppRoutes() {
   return (
