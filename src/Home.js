@@ -2,10 +2,10 @@ import { useAccount, useEnsName } from 'wagmi';
 import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import { useEffect } from 'react';
 import * as React from 'react';
 import * as ethers from 'ethers';
+import { LensApolloClient } from './api/api';
 import { DisplayName } from './components/DisplayName';
 import {
   CheckIcon,
@@ -46,24 +46,6 @@ const GET_ALL_USERS = gql`
   }
 `;
 
-const GET_DEFAULT_PROFILE = gql`
-  query DefaultProfile($address: EthereumAddress!) {
-    defaultProfile(request: { ethereumAddress: $address }) {
-      id
-      name
-      bio
-      metadata
-      handle
-      ownedBy
-    }
-  }
-`;
-
-const lensApolloClient = new ApolloClient({
-  cache: new InMemoryCache(),
-  uri: 'https://api.lens.dev',
-});
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
@@ -92,23 +74,13 @@ const HtmlTooltip = styled(({ className, ...props }) => (
 }));
 
 export function Home() {
-  const { address: myAddress } = useAccount();
   const [inputAddress, setInputAddress] = useState('');
   const { data: allQuestions } = useQuery(GET_ALL_QUESTIONS);
   const { data: allUsers } = useQuery(GET_ALL_USERS);
-  const { data: defaultProfile } = useQuery(GET_DEFAULT_PROFILE, {
-    client: lensApolloClient,
-    variables: { address: '0x8c79cCB572d5dcD96af6734BA1E5019D98fCAFc4' },
-  });
-  const provider = ethers.getDefaultProvider();
 
   const [timeline, setTimeline] = useState([]);
   const [userMapping, setUserMapping] = useState({});
   const [count, setCount] = useState({});
-
-  useEffect(() => {
-    console.log(defaultProfile);
-  }, [defaultProfile]);
 
   useEffect(() => {
     if (!allQuestions) {
@@ -273,14 +245,14 @@ export function Home() {
                                   Answered: {count[event.source]?.answerCount} Questions
                                 </Typography>
                                 <Typography color='inherit'>
-                                  Verified: {event.sourceHasAskedAnswered ? 'Yes' : 'No'}
+                                  Power User: {event.sourceHasAskedAnswered ? 'Yes' : 'No'}
                                 </Typography>
                                 <br />
                                 What does all of this mean? This user has <b>asked</b>{' '}
                                 {count[event.source]?.questionCount} questions and <b>answered</b>{' '}
                                 {count[event.source]?.answerCount} questions. They are{' '}
-                                {event.sourceHasAskedAnswered ? '' : 'not'}verified because they
-                                were active recently.
+                                {event.sourceHasAskedAnswered ? '' : 'not'} a power user because
+                                they were active recently.
                               </React.Fragment>
                             }
                           >
@@ -291,7 +263,7 @@ export function Home() {
                               <DisplayName address={event.source} />
                               {event.sourceHasAskedAnswered ? (
                                 <CheckBadgeIcon
-                                  className='inline h-4 w-4 text-green-600 ml-1'
+                                  className='inline h-4 w-4 text-indigo-600 ml-1'
                                   aria-hidden='true'
                                 />
                               ) : null}
@@ -308,14 +280,15 @@ export function Home() {
                                   Answered: {count[event.target]?.answerCount} Questions
                                 </Typography>
                                 <Typography color='inherit'>
-                                  Verified: {event.targetHasAskedAnswered ? 'Yes' : 'No'}
+                                  Power User: {event.targetHasAskedAnswered ? 'Yes' : 'No'}
                                 </Typography>
                                 <br />
                                 What does all of this mean? This user has <b>asked</b>{' '}
                                 {count[event.target]?.questionCount} questions and <b>answered</b>{' '}
                                 {count[event.target]?.answerCount} questions. They are{' '}
-                                {event.targetHasAskedAnswered ? '' : 'not '}verified because they
-                                were {event.targetHasAskedAnswered ? '' : ' not '} active recently.
+                                {event.targetHasAskedAnswered ? '' : 'not '} a power user because
+                                they were {event.targetHasAskedAnswered ? '' : ' not '} active
+                                recently.
                               </React.Fragment>
                             }
                           >
@@ -325,9 +298,9 @@ export function Home() {
                             >
                               <DisplayName address={event.target} />
                               {event.targetHasAskedAnswered ? (
-                                <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                                <Tooltip title='Power User! This user has asked or answered a question recently.'>
                                   <CheckBadgeIcon
-                                    className='inline h-4 w-4 text-green-600 ml-1'
+                                    className='inline h-4 w-4 text-indigo-600 ml-1'
                                     aria-hidden='true'
                                   />
                                 </Tooltip>

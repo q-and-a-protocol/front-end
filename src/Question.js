@@ -7,10 +7,8 @@ import networkMapping from './constants/networkMapping.json';
 import { DisplayName } from './components/DisplayName';
 
 export function Question() {
-  const provider = ethers.getDefaultProvider();
   const { address: myAddress, isDisconnected } = useAccount();
   const { questioner, answerer, index } = useParams();
-  const { data: ensName } = useEnsName();
   const [questionData, setQuestionData] = useState();
   const [answer, setAnswer] = useState();
   const { chain } = useNetwork();

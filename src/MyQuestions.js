@@ -254,9 +254,9 @@ export function MyQuestions() {
                                       >
                                         <DisplayName address={event.source} />
                                         {event.sourceHasAskedAnswered ? (
-                                          <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                                          <Tooltip title='Power User! This user has asked or answered a question recently.'>
                                             <CheckBadgeIcon
-                                              className='inline h-4 w-4 text-green-600 ml-1'
+                                              className='inline h-4 w-4 text-indigo-600 ml-1'
                                               aria-hidden='true'
                                             />
                                           </Tooltip>
@@ -269,9 +269,9 @@ export function MyQuestions() {
                                       >
                                         <DisplayName address={event.target} />
                                         {event.targetHasAskedAnswered ? (
-                                          <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                                          <Tooltip title='Power User! This user has asked or answered a question recently.'>
                                             <CheckBadgeIcon
-                                              className='inline h-4 w-4 text-green-600 ml-1'
+                                              className='inline h-4 w-4 text-indigo-600 ml-1'
                                               aria-hidden='true'
                                             />
                                           </Tooltip>
@@ -352,9 +352,9 @@ export function MyQuestions() {
                                       >
                                         <DisplayName address={event.source} />
                                         {event.sourceHasAskedAnswered ? (
-                                          <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                                          <Tooltip title='Power User! This user has asked or answered a question recently.'>
                                             <CheckBadgeIcon
-                                              className='inline h-4 w-4 text-green-600 ml-1'
+                                              className='inline h-4 w-4 text-indigo-600 ml-1'
                                               aria-hidden='true'
                                             />
                                           </Tooltip>
@@ -367,9 +367,9 @@ export function MyQuestions() {
                                       >
                                         <DisplayName address={event.target} />
                                         {event.targetHasAskedAnswered ? (
-                                          <Tooltip title='Verified! This user has asked or answered a question recently.'>
+                                          <Tooltip title='Power User! This user has asked or answered a question recently.'>
                                             <CheckBadgeIcon
-                                              className='inline h-4 w-4 text-green-600 ml-1'
+                                              className='inline h-4 w-4 text-indigo-600 ml-1'
                                               aria-hidden='true'
                                             />
                                           </Tooltip>

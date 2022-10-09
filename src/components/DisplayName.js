@@ -1,6 +1,8 @@
 import { useAccount } from 'wagmi';
 import * as ethers from 'ethers';
 import { useEffect, useState } from 'react';
+import { LensApolloClient, GET_DEFAULT_PROFILE } from '../api/api';
+import { useQuery } from '@apollo/client';
 
 async function getENSName(address) {
   const provider = ethers.getDefaultProvider();
@@ -12,7 +14,18 @@ async function getENSName(address) {
 export function DisplayName({ address, textColor }) {
   const { address: myAddress } = useAccount();
   const [ENSName, setENSName] = useState('');
+  const [LensName, setLensName] = useState('');
   const [displayName, setDisplayName] = useState('Loading...');
+  const { data: profile } = useQuery(GET_DEFAULT_PROFILE, {
+    client: LensApolloClient,
+    variables: { address: address },
+  });
+
+  useEffect(() => {
+    if (profile?.defaultProfile) {
+      setLensName(profile.defaultProfile.handle);
+    }
+  }, [profile]);
 
   useEffect(() => {
     const result = getENSName(address);
@@ -28,11 +41,13 @@ export function DisplayName({ address, textColor }) {
       setDisplayName('You');
     } else if (ENSName) {
       setDisplayName(ENSName);
+    } else if (LensName) {
+      setDisplayName(LensName);
     } else {
       const formattedAddress = address.slice(0, 4) + '...' + address.slice(-4);
       setDisplayName(formattedAddress);
     }
-  }, [ENSName, address]);
+  }, [address, ENSName, LensName]);
 
   return <span className={`${textColor}`}>{displayName}</span>;
 }
