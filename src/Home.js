@@ -221,22 +221,39 @@ export function Home() {
             </button>
           </RouterLink>
         </form>
-        <div className='flow-root mt-10 w-9/12 mx-auto flex flex-row border border-slate-100 py-4 px-4 rounded-lg'>
-          <h2 className='font-bold text-base'>Recommended Users</h2>
-          {/* flex flex-row items-center */}
-          <div className='inline-block w-1/3 justify-center'>
-            <DisplayName
-              className='font-medium text-gray-900'
-              address={'0x129c68C123C15a36B4Fe0A032D0Da2e12fCA799b'}
-            />
-            <CheckBadgeIcon className='inline h-4 w-4 text-indigo-600 ml-1' aria-hidden='true' />
-          </div>
-          <div className='inline-block w-1/3 justify-center'>
-            <DisplayName
-              className='font-medium text-gray-900'
-              address={'0x8c79cCB572d5dcD96af6734BA1E5019D98fCAFc4'}
-            />
-            <CheckBadgeIcon className='inline h-4 w-4 text-indigo-600 ml-1' aria-hidden='true' />
+        <div className='mt-10 w-9/12 mx-auto flex flex-col border border-slate-100 py-4 px-4 rounded-lg'>
+          <h2 className='w-full font-bold text-base'>Recommended Users</h2>
+          <div className='flex flex-row items-center mt-3'>
+            <div className='inline-block w-1/3 flex justify-center items-center'>
+              <RouterLink
+                to={'/profile/0x27f940eb8fa6740e38a20214592cece329bde8df'}
+                className='font-medium text-gray-900 pr-2 flex flex-row items-center'
+              >
+                <DisplayName
+                  className='font-medium text-gray-900'
+                  address={'0x27f940eb8fa6740e38a20214592cece329bde8df'}
+                />
+                <CheckBadgeIcon
+                  className='inline h-4 w-4 text-indigo-600 ml-1'
+                  aria-hidden='true'
+                />
+              </RouterLink>
+            </div>
+            <div className='inline-block w-1/3 flex justify-center items-center'>
+              <RouterLink
+                to={'/profile/0x8c79ccb572d5dcd96af6734ba1e5019d98fcafc4'}
+                className='font-medium text-gray-900 pr-2 flex flex-row items-center'
+              >
+                <DisplayName
+                  className='font-medium text-gray-900'
+                  address={'0x8c79ccb572d5dcd96af6734ba1e5019d98fcafc4'}
+                />
+                <CheckBadgeIcon
+                  className='inline h-4 w-4 text-indigo-600 ml-1'
+                  aria-hidden='true'
+                />
+              </RouterLink>
+            </div>
           </div>
         </div>
         <div className='flow-root mt-10 w-4/6 mx-auto'>
