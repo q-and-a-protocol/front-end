@@ -222,7 +222,10 @@ export function Home() {
           </RouterLink>
         </form>
         <div className='mt-10 w-9/12 mx-auto flex flex-col border border-slate-100 py-4 px-4 rounded-lg'>
-          <h2 className='w-full font-bold text-base'>Recommended Users</h2>
+          <h2 className='w-full font-bold text-lg'>Recommended Users</h2>
+          <p className='w-full font-normal text-base text-gray-400'>
+            Ask these recommended users a question!
+          </p>
           <div className='flex flex-row items-center mt-3'>
             <div className='inline-block w-1/3 flex justify-center items-center'>
               <RouterLink
