@@ -6,22 +6,9 @@ import { useQuery, gql } from '@apollo/client';
 import QuestionAndAnswerABI from './constants/QuestionAndAnswer.json';
 import ExampleERC20ABI from './constants/ExampleERC20.json';
 import * as ethers from 'ethers';
+import { DisplayName } from './components/DisplayName';
 import networkMapping from './constants/networkMapping.json';
 import Tooltip from '@mui/material/Tooltip';
-import { Link as RouterLink } from 'react-router-dom';
-import { Fragment } from 'react';
-import { Menu, Popover, Transition } from '@headlessui/react';
-import {
-  ArrowLongLeftIcon,
-  CheckIcon,
-  HandThumbUpIcon,
-  HomeIcon,
-  MagnifyingGlassIcon,
-  PaperClipIcon,
-  QuestionMarkCircleIcon,
-  UserIcon,
-} from '@heroicons/react/20/solid';
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 const GET_ALL_QUESTIONS = gql`
   {
@@ -60,7 +47,6 @@ export function Profile() {
   const provider = ethers.getDefaultProvider();
   const { address: myAddress, isDisconnected } = useAccount();
   const { address } = useParams();
-  const [formattedAddress, setFormattedAddress] = useState('Loading...');
   const [question, setQuestion] = useState('');
   const [bounty, setBounty] = useState('5');
   const [recommendedBounty, setRecommendedBounty] = useState(5);
@@ -91,23 +77,6 @@ export function Profile() {
       ],
     });
   }
-
-  useEffect(() => {
-    async function formatAddress(address) {
-      let result;
-      if (myAddress && ethers.utils.getAddress(address) == ethers.utils.getAddress(myAddress)) {
-        return 'You';
-      }
-      const ensName = await provider.lookupAddress(address);
-      const formattedAddress = address.slice(0, 4) + '...' + address.slice(-4);
-      result = ensName ? ensName : formattedAddress;
-      return result;
-    }
-
-    formatAddress(address).then((result) => {
-      setFormattedAddress(result);
-    });
-  }, [address]);
 
   const { data: newData } = useContractRead({
     addressOrName: QuestionAndAnswerAddress,
@@ -220,7 +189,7 @@ export function Profile() {
                   </div>
                   <div>
                     <h1 className='text-2xl font-bold text-gray-900'>
-                      {formattedAddress || 'Loading...'}
+                      <DisplayName address={address} />
                     </h1>
                     {/* <p className='text-sm font-medium text-gray-500'>
                       Applied for{' '}
@@ -268,7 +237,7 @@ export function Profile() {
                             <dd className='mt-1 text-sm text-gray-900'>
                               {recommendedBounty === 0 ? (
                                 <span>
-                                  {formattedAddress || 'Loading...'} has not set a minimum price!
+                                  <DisplayName address={address} /> has not set a minimum price!
                                   We'd recommend at least $5.
                                 </span>
                               ) : (
@@ -291,7 +260,7 @@ export function Profile() {
                             <dd className='mt-1 text-sm text-gray-900'>
                               {interests === '' ? (
                                 <span>
-                                  {formattedAddress || 'Loading...'} hasn't set any interests, ask
+                                  <DisplayName address={address} /> hasn't set any interests, ask
                                   them anything!
                                 </span>
                               ) : (

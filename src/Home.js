@@ -2,9 +2,11 @@ import { useAccount, useEnsName } from 'wagmi';
 import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import { useEffect } from 'react';
 import * as React from 'react';
 import * as ethers from 'ethers';
+import { DisplayName } from './components/DisplayName';
 import {
   CheckIcon,
   ChatBubbleLeftRightIcon,
@@ -44,6 +46,24 @@ const GET_ALL_USERS = gql`
   }
 `;
 
+const GET_DEFAULT_PROFILE = gql`
+  query DefaultProfile($address: EthereumAddress!) {
+    defaultProfile(request: { ethereumAddress: $address }) {
+      id
+      name
+      bio
+      metadata
+      handle
+      ownedBy
+    }
+  }
+`;
+
+const lensApolloClient = new ApolloClient({
+  cache: new InMemoryCache(),
+  uri: 'https://api.lens.dev',
+});
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
@@ -76,12 +96,19 @@ export function Home() {
   const [inputAddress, setInputAddress] = useState('');
   const { data: allQuestions } = useQuery(GET_ALL_QUESTIONS);
   const { data: allUsers } = useQuery(GET_ALL_USERS);
+  const { data: defaultProfile } = useQuery(GET_DEFAULT_PROFILE, {
+    client: lensApolloClient,
+    variables: { address: '0x8c79cCB572d5dcD96af6734BA1E5019D98fCAFc4' },
+  });
   const provider = ethers.getDefaultProvider();
 
   const [timeline, setTimeline] = useState([]);
   const [userMapping, setUserMapping] = useState({});
-  const [formattedAddresses, setFormattedAddresses] = useState({});
   const [count, setCount] = useState({});
+
+  useEffect(() => {
+    console.log(defaultProfile);
+  }, [defaultProfile]);
 
   useEffect(() => {
     if (!allQuestions) {
@@ -129,24 +156,7 @@ export function Home() {
   useEffect(() => {
     if (!allQuestions || !allQuestions.newsfeedEvents) return;
     else {
-      async function formatAddress(address) {
-        let result;
-        if (myAddress && ethers.utils.getAddress(address) == ethers.utils.getAddress(myAddress)) {
-          return 'You';
-        }
-        const ensName = await provider.lookupAddress(address);
-        const formattedAddress = address.slice(0, 4) + '...' + address.slice(-4);
-        result = ensName ? ensName : formattedAddress;
-        return result;
-      }
-
       allQuestions.newsfeedEvents.forEach((e) => {
-        formatAddress(e.answerer).then((result) => {
-          setFormattedAddresses((prevState) => ({ ...prevState, [e.answerer]: result }));
-        });
-        formatAddress(e.questioner).then((result) => {
-          setFormattedAddresses((prevState) => ({ ...prevState, [e.questioner]: result }));
-        });
         setCount((prevState) => {
           if (!prevState[e.questioner]) {
             return {
@@ -278,7 +288,7 @@ export function Home() {
                               to={event.to + event.source}
                               className='font-medium text-gray-900 pr-2 flex flex-row items-center'
                             >
-                              {formattedAddresses[event.source] || 'Loading...'}
+                              <DisplayName address={event.source} />
                               {event.sourceHasAskedAnswered ? (
                                 <CheckBadgeIcon
                                   className='inline h-4 w-4 text-green-600 ml-1'
@@ -313,7 +323,7 @@ export function Home() {
                               to={event.to + event.target}
                               className='font-medium text-gray-900 ml-2 flex flex-row items-center'
                             >
-                              {formattedAddresses[event.target] || 'Loading...'}
+                              <DisplayName address={event.target} />
                               {event.targetHasAskedAnswered ? (
                                 <Tooltip title='Verified! This user has asked or answered a question recently.'>
                                   <CheckBadgeIcon

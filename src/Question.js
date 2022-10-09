@@ -4,52 +4,17 @@ import { useAccount, useContractWrite, useContractRead, useEnsName, useNetwork }
 import QuestionAndAnswerABI from './constants/QuestionAndAnswer.json';
 import * as ethers from 'ethers';
 import networkMapping from './constants/networkMapping.json';
+import { DisplayName } from './components/DisplayName';
 
 export function Question() {
   const provider = ethers.getDefaultProvider();
   const { address: myAddress, isDisconnected } = useAccount();
   const { questioner, answerer, index } = useParams();
-  const [formattedQuestioner, setFormattedQuestioner] = useState('Loading...');
-  const [formattedAnswerer, setFormattedAnswerer] = useState('Loading...');
   const { data: ensName } = useEnsName();
   const [questionData, setQuestionData] = useState();
   const [answer, setAnswer] = useState();
   const { chain } = useNetwork();
   const QuestionAndAnswerAddress = networkMapping[chain?.id || 80001]?.QuestionAndAnswer[0];
-
-  useEffect(() => {
-    async function formatAddress(address) {
-      let result;
-      if (myAddress && ethers.utils.getAddress(address) == ethers.utils.getAddress(myAddress)) {
-        return 'You';
-      }
-      const ensName = await provider.lookupAddress(address);
-      const formattedAddress = address.slice(0, 4) + '...' + address.slice(-4);
-      result = ensName ? ensName : formattedAddress;
-      return result;
-    }
-
-    formatAddress(questioner).then((result) => {
-      setFormattedQuestioner(result);
-    });
-  }, [questioner]);
-
-  useEffect(() => {
-    async function formatAddress(address) {
-      let result;
-      if (myAddress && ethers.utils.getAddress(address) == ethers.utils.getAddress(myAddress)) {
-        return 'You';
-      }
-      const ensName = await provider.lookupAddress(address);
-      const formattedAddress = address.slice(0, 4) + '...' + address.slice(-4);
-      result = ensName ? ensName : formattedAddress;
-      return result;
-    }
-
-    formatAddress(answerer).then((result) => {
-      setFormattedAnswerer(result);
-    });
-  }, [answerer]);
 
   const { data: newData } = useContractRead({
     addressOrName: QuestionAndAnswerAddress,
@@ -117,10 +82,10 @@ export function Question() {
                 <div>
                   <h3 className='text-lg font-medium leading-6 text-gray-900'>Question Details</h3>
                   <p className='mt-3 text-md font-medium text-gray-700'>
-                    Asked by: <span className='text-indigo-600'>{formattedQuestioner}</span>
+                    Asked by: <DisplayName textColor={'text-indigo-600'} address={questioner} />
                   </p>
                   <p className='mt-3 text-md font-medium text-gray-700'>
-                    Asked to: <span className='text-indigo-600'>{formattedAnswerer}</span>
+                    Asked to: <DisplayName textColor={'text-indigo-600'} address={answerer} />
                   </p>
                   <p className='mt-3 text-md font-medium text-gray-700'>
                     Bounty:{' '}
