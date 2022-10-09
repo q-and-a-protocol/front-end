@@ -6,6 +6,7 @@ import { useQuery, gql } from '@apollo/client';
 import QuestionAndAnswerABI from './constants/QuestionAndAnswer.json';
 import ExampleERC20ABI from './constants/ExampleERC20.json';
 import * as ethers from 'ethers';
+import { LensApolloClient, GET_DEFAULT_PROFILE } from './api/api';
 import { DisplayName } from './components/DisplayName';
 import networkMapping from './constants/networkMapping.json';
 import Tooltip from '@mui/material/Tooltip';
@@ -44,7 +45,6 @@ function convertExpiryDate(expiryString) {
 }
 
 export function Profile() {
-  const provider = ethers.getDefaultProvider();
   const { address: myAddress, isDisconnected } = useAccount();
   const { address } = useParams();
   const [question, setQuestion] = useState('');
@@ -58,6 +58,10 @@ export function Profile() {
   const QuestionAndAnswerAddress = networkMapping[chain?.id || 80001]?.QuestionAndAnswer[0];
   const ExampleERC20Address = networkMapping[chain?.id || 80001]?.ExampleERC20[0];
   const [count, setCount] = useState({});
+  const { data: profile } = useQuery(GET_DEFAULT_PROFILE, {
+    client: LensApolloClient,
+    variables: { address: address },
+  });
 
   const { write } = useContractWrite({
     mode: 'recklesslyUnprepared',
@@ -245,16 +249,18 @@ export function Profile() {
                               )}
                             </dd>
                           </div>
-                          {/* <div className='sm:col-span-1'>
-                            <dt className='text-sm font-medium text-gray-500'>
-                              Salary expectation
-                            </dt>
-                            <dd className='mt-1 text-sm text-gray-900'>$120,000</dd>
-                          </div> */}
                           <div className='sm:col-span-1'>
                             <dt className='text-sm font-medium text-gray-500'>Full Address</dt>
                             <dd className='mt-1 text-sm text-gray-900'>{address}</dd>
                           </div>
+                          {profile?.defaultProfile?.handle ? (
+                            <div className='sm:col-span-1'>
+                              <dt className='text-sm font-medium text-gray-500'>Lens Handle</dt>
+                              <dd className='mt-1 text-sm text-gray-900'>
+                                {profile.defaultProfile.handle}
+                              </dd>
+                            </div>
+                          ) : null}
                           <div className='sm:col-span-2'>
                             <dt className='text-sm font-medium text-gray-500'>Interests</dt>
                             <dd className='mt-1 text-sm text-gray-900'>
@@ -268,6 +274,14 @@ export function Profile() {
                               )}
                             </dd>
                           </div>
+                          {profile?.defaultProfile?.bio ? (
+                            <div className='sm:col-span-2'>
+                              <dt className='text-sm font-medium text-gray-500'>Lens Bio</dt>
+                              <dd className='mt-1 text-sm text-gray-900'>
+                                {profile.defaultProfile.bio}
+                              </dd>
+                            </div>
+                          ) : null}
                           <div className='sm:col-span-1'>
                             <dt className='text-sm font-medium text-gray-500'>Questions Asked</dt>
                             <dd className='mt-1 text-sm text-gray-900'>

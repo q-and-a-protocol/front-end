@@ -1,11 +1,11 @@
-import { useAccount, useEnsName } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { useEffect } from 'react';
 import * as React from 'react';
 import * as ethers from 'ethers';
-import { LensApolloClient } from './api/api';
+import { LensApolloClient, GET_DEFAULT_PROFILE } from './api/api';
 import { DisplayName } from './components/DisplayName';
 import {
   CheckIcon,
@@ -74,9 +74,14 @@ const HtmlTooltip = styled(({ className, ...props }) => (
 }));
 
 export function Home() {
+  const { address: myAddress } = useAccount();
   const [inputAddress, setInputAddress] = useState('');
   const { data: allQuestions } = useQuery(GET_ALL_QUESTIONS);
   const { data: allUsers } = useQuery(GET_ALL_USERS);
+  const { data: profile } = useQuery(GET_DEFAULT_PROFILE, {
+    client: LensApolloClient,
+    variables: { address: myAddress },
+  });
 
   const [timeline, setTimeline] = useState([]);
   const [userMapping, setUserMapping] = useState({});
@@ -183,6 +188,12 @@ export function Home() {
     }
   }, [allUsers]);
 
+  useEffect(() => {
+    if (profile?.defaultProfile) {
+      console.log(profile.defaultProfile.handle);
+    }
+  }, [profile]);
+
   return (
     <div className='bg-white sm:rounded-lg '>
       <div className='px-4 py-5 sm:p-6 '>
@@ -210,6 +221,24 @@ export function Home() {
             </button>
           </RouterLink>
         </form>
+        <div className='flow-root mt-10 w-9/12 mx-auto flex flex-row border border-slate-100 py-4 px-4 rounded-lg'>
+          <h2 className='font-bold text-base'>Recommended Users</h2>
+          {/* flex flex-row items-center */}
+          <div className='inline-block w-1/3 justify-center'>
+            <DisplayName
+              className='font-medium text-gray-900'
+              address={'0x129c68C123C15a36B4Fe0A032D0Da2e12fCA799b'}
+            />
+            <CheckBadgeIcon className='inline h-4 w-4 text-indigo-600 ml-1' aria-hidden='true' />
+          </div>
+          <div className='inline-block w-1/3 justify-center'>
+            <DisplayName
+              className='font-medium text-gray-900'
+              address={'0x8c79cCB572d5dcD96af6734BA1E5019D98fCAFc4'}
+            />
+            <CheckBadgeIcon className='inline h-4 w-4 text-indigo-600 ml-1' aria-hidden='true' />
+          </div>
+        </div>
         <div className='flow-root mt-10 w-4/6 mx-auto'>
           <ul role='list' className='-mb-8'>
             {timeline.map((event, eventIdx) => (
@@ -239,20 +268,17 @@ export function Home() {
                             title={
                               <React.Fragment>
                                 <Typography color='inherit'>
+                                  Power User: {event.sourceHasAskedAnswered ? 'Yes' : 'No'}
+                                </Typography>
+                                <Typography color='inherit'>
                                   Asked: {count[event.source]?.questionCount} Questions
                                 </Typography>
                                 <Typography color='inherit'>
                                   Answered: {count[event.source]?.answerCount} Questions
                                 </Typography>
-                                <Typography color='inherit'>
-                                  Power User: {event.sourceHasAskedAnswered ? 'Yes' : 'No'}
-                                </Typography>
                                 <br />
-                                What does all of this mean? This user has <b>asked</b>{' '}
-                                {count[event.source]?.questionCount} questions and <b>answered</b>{' '}
-                                {count[event.source]?.answerCount} questions. They are{' '}
-                                {event.sourceHasAskedAnswered ? '' : 'not'} a power user because
-                                they were active recently.
+                                What does all of this mean? Click their display name for an
+                                explanation and to get even more details on this user!
                               </React.Fragment>
                             }
                           >
@@ -274,21 +300,17 @@ export function Home() {
                             title={
                               <React.Fragment>
                                 <Typography color='inherit'>
+                                  Power User: {event.targetHasAskedAnswered ? 'Yes' : 'No'}
+                                </Typography>
+                                <Typography color='inherit'>
                                   Asked: {count[event.target]?.questionCount} Questions
                                 </Typography>
                                 <Typography color='inherit'>
                                   Answered: {count[event.target]?.answerCount} Questions
                                 </Typography>
-                                <Typography color='inherit'>
-                                  Power User: {event.targetHasAskedAnswered ? 'Yes' : 'No'}
-                                </Typography>
                                 <br />
-                                What does all of this mean? This user has <b>asked</b>{' '}
-                                {count[event.target]?.questionCount} questions and <b>answered</b>{' '}
-                                {count[event.target]?.answerCount} questions. They are{' '}
-                                {event.targetHasAskedAnswered ? '' : 'not '} a power user because
-                                they were {event.targetHasAskedAnswered ? '' : ' not '} active
-                                recently.
+                                What does all of this mean? Click their display name for an
+                                explanation and to get even more details on this user!
                               </React.Fragment>
                             }
                           >

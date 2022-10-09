@@ -11,7 +11,7 @@ async function getENSName(address) {
   return ensName;
 }
 
-export function DisplayName({ address, textColor }) {
+export function DisplayName({ address, className }) {
   const { address: myAddress } = useAccount();
   const [ENSName, setENSName] = useState('');
   const [LensName, setLensName] = useState('');
@@ -49,5 +49,5 @@ export function DisplayName({ address, textColor }) {
     }
   }, [address, ENSName, LensName]);
 
-  return <span className={`${textColor}`}>{displayName}</span>;
+  return <span className={className}>{displayName}</span>;
 }

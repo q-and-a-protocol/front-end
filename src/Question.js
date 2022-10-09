@@ -80,10 +80,10 @@ export function Question() {
                 <div>
                   <h3 className='text-lg font-medium leading-6 text-gray-900'>Question Details</h3>
                   <p className='mt-3 text-md font-medium text-gray-700'>
-                    Asked by: <DisplayName textColor={'text-indigo-600'} address={questioner} />
+                    Asked by: <DisplayName className='text-indigo-600' address={questioner} />
                   </p>
                   <p className='mt-3 text-md font-medium text-gray-700'>
-                    Asked to: <DisplayName textColor={'text-indigo-600'} address={answerer} />
+                    Asked to: <DisplayName className='text-indigo-600' address={answerer} />
                   </p>
                   <p className='mt-3 text-md font-medium text-gray-700'>
                     Bounty:{' '}
