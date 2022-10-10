@@ -3,7 +3,6 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 
 import { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
 import { BrowserRouter as Router, Link as RouterLink, useMatch } from 'react-router-dom';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
@@ -12,27 +11,19 @@ function classNames(...classes) {
 }
 
 function NavLink(props) {
-  const match = useMatch(props.to);
-  // TODO: IF match give different colour to the below element!
   return <RouterLink {...props} />;
 }
 
 export function Header() {
-  const { address, isConnected } = useAccount();
-  const { connect } = useConnect({
-    connector: new InjectedConnector(),
-  });
-  const { disconnect } = useDisconnect();
-  const connectBGColor = isConnected ? 'bg-rose-400' : 'bg-indigo-600';
-  const { chain, chains } = useNetwork();
+  const { isConnected } = useAccount();
 
-  function toggleWallet() {
-    if (isConnected) {
-      disconnect();
-    } else {
-      connect();
-    }
-  }
+  const matchHome = useMatch('/');
+  const matchProfile = useMatch('/myprofile');
+  const matchMyQuestions = useMatch('/myquestions');
+  const matchMyAnswers = useMatch('/myanswers');
+  const matchHelp = useMatch('/help');
+
+  const matchStyle = 'font-bold underline underline-offset-4';
 
   return (
     <Popover className='relative bg-white'>
@@ -62,30 +53,46 @@ export function Header() {
             </RouterLink>
           </div>
           <Popover.Group as='nav' className='hidden space-x-10 md:flex'>
-            <NavLink to='/' className='text-base font-medium text-gray-600 hover:text-gray-900'>
+            <NavLink
+              to='/'
+              className={`text-base font-medium text-gray-600 hover:text-gray-900 ${
+                matchHome ? matchStyle : ''
+              }`}
+            >
               Home
             </NavLink>
             {isConnected ? (
               <NavLink
                 to='/myprofile'
-                className='text-base font-medium text-gray-600 hover:text-gray-900'
+                className={`text-base font-medium text-gray-600 hover:text-gray-900 ${
+                  matchProfile ? matchStyle : ''
+                }`}
               >
                 Profile
               </NavLink>
             ) : null}
             <NavLink
               to='/myquestions'
-              className='text-base font-medium text-gray-600 hover:text-gray-900'
+              className={`text-base font-medium text-gray-600 hover:text-gray-900 ${
+                matchMyQuestions ? matchStyle : ''
+              }`}
             >
               My Questions
             </NavLink>
             <NavLink
               to='/myanswers'
-              className='text-base font-medium text-gray-600 hover:text-gray-900'
+              className={`text-base font-medium text-gray-600 hover:text-gray-900 ${
+                matchMyAnswers ? matchStyle : ''
+              }`}
             >
               My Answers
             </NavLink>
-            <NavLink to='/help' className='text-base font-medium text-gray-600 hover:text-gray-900'>
+            <NavLink
+              to='/help'
+              className={`text-base font-medium text-gray-600 hover:text-gray-900 ${
+                matchHelp ? matchStyle : ''
+              }`}
+            >
               Help!
             </NavLink>
           </Popover.Group>

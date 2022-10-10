@@ -76,7 +76,6 @@ const GET_ALL_USERS = gql`
 `;
 
 export function MyQuestions() {
-  const provider = ethers.getDefaultProvider();
   const { address: myAddress } = useAccount();
   const [userMapping, setUserMapping] = useState({});
 
@@ -283,7 +282,10 @@ export function MyQuestions() {
                                   </div>
                                   <div className='whitespace-nowrap text-right text-sm text-gray-500'>
                                     <div className='text-green-600'>
-                                      ${Number(ethers.utils.formatUnits(event.bounty).toString())}
+                                      $
+                                      {Number(
+                                        ethers.utils.formatUnits(event.bounty).toString()
+                                      ).toFixed(2)}
                                     </div>
                                     <time>{event.date}</time>
                                   </div>
@@ -381,7 +383,10 @@ export function MyQuestions() {
                                   </div>
                                   <div className='whitespace-nowrap text-right text-sm text-gray-500'>
                                     <div className='text-green-600'>
-                                      ${Number(ethers.utils.formatUnits(event.bounty).toString())}
+                                      $
+                                      {Number(
+                                        ethers.utils.formatUnits(event.bounty).toString()
+                                      ).toFixed(2)}
                                     </div>
                                     <time>{event.date}</time>
                                   </div>

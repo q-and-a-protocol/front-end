@@ -67,7 +67,6 @@ const GET_ALL_USERS = gql`
 `;
 
 export function MyAnswers() {
-  const provider = ethers.getDefaultProvider();
   const { address: myAddress } = useAccount();
   const [userMapping, setUserMapping] = useState({});
 

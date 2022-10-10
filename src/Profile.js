@@ -91,7 +91,9 @@ export function Profile() {
 
   useEffect(() => {
     if (newData) {
-      const formatted = Number(ethers.utils.formatEther(newData.priceMinimum.toString()));
+      const formatted = Number(ethers.utils.formatEther(newData.priceMinimum.toString())).toFixed(
+        2
+      );
       setRecommendedBounty(formatted);
       setBounty(formatted.toString());
       setInterests(newData.interests);
@@ -355,7 +357,7 @@ export function Profile() {
                           </div>
 
                           <div className='flex flex-row'>
-                            <div className='w-1/2'>
+                            <div className='w-1/2 px-1'>
                               <label
                                 htmlFor='bounty'
                                 className='block text-sm font-medium text-gray-700'
@@ -377,9 +379,11 @@ export function Profile() {
                               </div>
                               <p className='mt-2 text-sm text-gray-500'>
                                 Set a price you're willing to pay to have the question answered.
+                                <br />
+                                Note: The only accepted method of payment is USDC.
                               </p>
                             </div>
-                            <div className='w-1/2'>
+                            <div className='w-1/2 px-1'>
                               <label
                                 htmlFor='expiryDate'
                                 className='block text-sm font-medium text-gray-700'

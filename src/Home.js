@@ -19,7 +19,7 @@ import { tooltipClasses } from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
 const GET_ALL_QUESTIONS = gql`
-  {
+  query GetNewsfeedEvents {
     newsfeedEvents {
       id
       questioner
@@ -76,7 +76,7 @@ const HtmlTooltip = styled(({ className, ...props }) => (
 export function Home() {
   const { address: myAddress } = useAccount();
   const [inputAddress, setInputAddress] = useState('');
-  const { data: allQuestions } = useQuery(GET_ALL_QUESTIONS);
+  const { data: allQuestions, startPolling } = useQuery(GET_ALL_QUESTIONS);
   const { data: allUsers } = useQuery(GET_ALL_USERS);
   const { data: profile } = useQuery(GET_DEFAULT_PROFILE, {
     client: LensApolloClient,
@@ -86,6 +86,13 @@ export function Home() {
   const [timeline, setTimeline] = useState([]);
   const [userMapping, setUserMapping] = useState({});
   const [count, setCount] = useState({});
+
+  const recommendedUser1 = '0x27f940eb8fa6740e38a20214592cece329bde8df';
+  const recommendedUser2 = '0x8c79ccb572d5dcd96af6734ba1e5019d98fcafc4';
+
+  useEffect(() => {
+    startPolling(500);
+  }, [startPolling]);
 
   useEffect(() => {
     if (!allQuestions) {
@@ -131,6 +138,7 @@ export function Home() {
   }, [allQuestions, userMapping]);
 
   useEffect(() => {
+    console.log(allQuestions);
     if (!allQuestions || !allQuestions.newsfeedEvents) return;
     else {
       allQuestions.newsfeedEvents.forEach((e) => {
@@ -228,34 +236,62 @@ export function Home() {
           </p>
           <div className='flex flex-row items-center mt-3'>
             <div className='inline-block w-1/3 flex justify-center items-center'>
-              <RouterLink
-                to={'/profile/0x27f940eb8fa6740e38a20214592cece329bde8df'}
-                className='font-medium text-gray-900 pr-2 flex flex-row items-center'
+              <HtmlTooltip
+                title={
+                  <React.Fragment>
+                    <Typography color='inherit'>Power User: Yes</Typography>
+                    <Typography color='inherit'>
+                      Asked: {count[recommendedUser1]?.questionCount} Questions
+                    </Typography>
+                    <Typography color='inherit'>
+                      Answered: {count[recommendedUser1]?.answerCount} Questions
+                    </Typography>
+                    <br />
+                    What does all of this mean? Click their display name for an explanation and to
+                    get even more details on this user!
+                  </React.Fragment>
+                }
               >
-                <DisplayName
-                  className='font-medium text-gray-900'
-                  address={'0x27f940eb8fa6740e38a20214592cece329bde8df'}
-                />
-                <CheckBadgeIcon
-                  className='inline h-4 w-4 text-indigo-600 ml-1'
-                  aria-hidden='true'
-                />
-              </RouterLink>
+                <RouterLink
+                  to={`/profile/${recommendedUser1}`}
+                  className='font-medium text-gray-900 pr-2 flex flex-row items-center'
+                >
+                  <DisplayName className='font-medium text-gray-900' address={recommendedUser1} />
+                  <CheckBadgeIcon
+                    className='inline h-4 w-4 text-indigo-600 ml-1'
+                    aria-hidden='true'
+                  />
+                </RouterLink>
+              </HtmlTooltip>
             </div>
             <div className='inline-block w-1/3 flex justify-center items-center'>
-              <RouterLink
-                to={'/profile/0x8c79ccb572d5dcd96af6734ba1e5019d98fcafc4'}
-                className='font-medium text-gray-900 pr-2 flex flex-row items-center'
+              <HtmlTooltip
+                title={
+                  <React.Fragment>
+                    <Typography color='inherit'>Power User: Yes</Typography>
+                    <Typography color='inherit'>
+                      Asked: {count[recommendedUser2]?.questionCount} Questions
+                    </Typography>
+                    <Typography color='inherit'>
+                      Answered: {count[recommendedUser2]?.answerCount} Questions
+                    </Typography>
+                    <br />
+                    What does all of this mean? Click their display name for an explanation and to
+                    get even more details on this user!
+                  </React.Fragment>
+                }
               >
-                <DisplayName
-                  className='font-medium text-gray-900'
-                  address={'0x8c79ccb572d5dcd96af6734ba1e5019d98fcafc4'}
-                />
-                <CheckBadgeIcon
-                  className='inline h-4 w-4 text-indigo-600 ml-1'
-                  aria-hidden='true'
-                />
-              </RouterLink>
+                <RouterLink
+                  to={`/profile/${recommendedUser2}`}
+                  className='font-medium text-gray-900 pr-2 flex flex-row items-center'
+                >
+                  <DisplayName className='font-medium text-gray-900' address={recommendedUser2} />
+                  <CheckBadgeIcon
+                    className='inline h-4 w-4 text-indigo-600 ml-1'
+                    aria-hidden='true'
+                  />
+                </RouterLink>
+              </HtmlTooltip>
             </div>
           </div>
         </div>
@@ -353,7 +389,7 @@ export function Home() {
                       </div>
                       <div className='whitespace-nowrap text-right text-sm text-gray-500'>
                         <div className='text-green-600'>
-                          ${Number(ethers.utils.formatUnits(event.bounty).toString())}
+                          ${Number(ethers.utils.formatUnits(event.bounty).toString()).toFixed(2)}
                         </div>
                         <time>{event.date}</time>
                       </div>

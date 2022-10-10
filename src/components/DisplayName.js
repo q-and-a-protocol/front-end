@@ -5,7 +5,10 @@ import { LensApolloClient, GET_DEFAULT_PROFILE } from '../api/api';
 import { useQuery } from '@apollo/client';
 
 async function getENSName(address) {
-  const provider = ethers.getDefaultProvider();
+  const provider = ethers.getDefaultProvider('homestead', {
+    alchemy: process.env.REACT_APP_ALCHEMY_API_KEY,
+    infura: process.env.REACT_APP_INFURA_API_KEY,
+  });
   const ensName = await provider.lookupAddress(address);
 
   return ensName;
