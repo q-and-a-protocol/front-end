@@ -91,7 +91,7 @@ export function Home() {
   const recommendedUser2 = '0x8c79ccb572d5dcd96af6734ba1e5019d98fcafc4';
 
   useEffect(() => {
-    startPolling(500);
+    startPolling(1000);
   }, [startPolling]);
 
   useEffect(() => {

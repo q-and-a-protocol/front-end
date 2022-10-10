@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useContractWrite, useNetwork, useContractRead, useAccount } from 'wagmi';
 import { useQuery, gql } from '@apollo/client';
 import QuestionAndAnswerABI from './constants/QuestionAndAnswer.json';
-import ExampleERC20ABI from './constants/ExampleERC20.json';
+import USDC_ERC20_ABI from './constants/USDC_ERC20.json';
 import * as ethers from 'ethers';
 import { LensApolloClient, GET_DEFAULT_PROFILE } from './api/api';
 import { DisplayName } from './components/DisplayName';
@@ -55,8 +55,8 @@ export function Profile() {
   const [approveAttempted, setApproveAttempted] = useState(false);
   const { data: allQuestions } = useQuery(GET_ALL_QUESTIONS);
   const { chain } = useNetwork();
-  const QuestionAndAnswerAddress = networkMapping[chain?.id || 80001]?.QuestionAndAnswer[0];
-  const ExampleERC20Address = networkMapping[chain?.id || 80001]?.ExampleERC20[0];
+  const QuestionAndAnswerAddress = networkMapping[chain?.id || 137]?.QuestionAndAnswer[0];
+  const USDC_ERC20_Address = networkMapping[chain?.id || 137]?.USDC_ERC20[0];
   const [count, setCount] = useState({});
   const { data: profile } = useQuery(GET_DEFAULT_PROFILE, {
     client: LensApolloClient,
@@ -102,8 +102,8 @@ export function Profile() {
 
   const { write: approveFunds } = useContractWrite({
     mode: 'recklesslyUnprepared',
-    addressOrName: ExampleERC20Address,
-    contractInterface: ExampleERC20ABI,
+    addressOrName: USDC_ERC20_Address,
+    contractInterface: USDC_ERC20_ABI,
     functionName: 'increaseAllowance',
     onSuccess() {
       setApproveAttempted(true);

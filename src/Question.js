@@ -12,7 +12,7 @@ export function Question() {
   const [questionData, setQuestionData] = useState();
   const [answer, setAnswer] = useState();
   const { chain } = useNetwork();
-  const QuestionAndAnswerAddress = networkMapping[chain?.id || 80001]?.QuestionAndAnswer[0];
+  const QuestionAndAnswerAddress = networkMapping[chain?.id || 137]?.QuestionAndAnswer[0];
 
   const whenQuestioner =
     myAddress &&

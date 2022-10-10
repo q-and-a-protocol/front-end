@@ -57,6 +57,40 @@
     {
         "type": "event",
         "anonymous": false,
+        "name": "EmergencyWithdraw",
+        "inputs": [
+            {
+                "type": "address",
+                "name": "withdrawalBy",
+                "indexed": true
+            },
+            {
+                "type": "uint256",
+                "name": "amount",
+                "indexed": true
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "anonymous": false,
+        "name": "OwnershipTransferred",
+        "inputs": [
+            {
+                "type": "address",
+                "name": "previousOwner",
+                "indexed": true
+            },
+            {
+                "type": "address",
+                "name": "newOwner",
+                "indexed": true
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "anonymous": false,
         "name": "QuestionAnswered",
         "inputs": [
             {
@@ -182,6 +216,7 @@
         "name": "answerQuestion",
         "constant": false,
         "payable": false,
+        "gas": 29000000,
         "inputs": [
             {
                 "type": "address",
@@ -204,6 +239,7 @@
         "constant": true,
         "stateMutability": "view",
         "payable": false,
+        "gas": 29000000,
         "inputs": [
             {
                 "type": "address"
@@ -233,6 +269,7 @@
         "name": "answererWithdraw",
         "constant": false,
         "payable": false,
+        "gas": 29000000,
         "inputs": [],
         "outputs": []
     },
@@ -241,6 +278,7 @@
         "name": "askQuestion",
         "constant": false,
         "payable": false,
+        "gas": 29000000,
         "inputs": [
             {
                 "type": "string",
@@ -266,6 +304,7 @@
         "name": "cancelQuestion",
         "constant": false,
         "payable": false,
+        "gas": 29000000,
         "inputs": [
             {
                 "type": "address",
@@ -280,10 +319,20 @@
     },
     {
         "type": "function",
+        "name": "emergencyWithdraw",
+        "constant": false,
+        "payable": false,
+        "gas": 29000000,
+        "inputs": [],
+        "outputs": []
+    },
+    {
+        "type": "function",
         "name": "getQuestionerToAnswererToQAs",
         "constant": true,
         "stateMutability": "view",
         "payable": false,
+        "gas": 29000000,
         "inputs": [
             {
                 "type": "address",
@@ -321,9 +370,33 @@
     },
     {
         "type": "function",
+        "name": "owner",
+        "constant": true,
+        "stateMutability": "view",
+        "payable": false,
+        "gas": 29000000,
+        "inputs": [],
+        "outputs": [
+            {
+                "type": "address"
+            }
+        ]
+    },
+    {
+        "type": "function",
+        "name": "renounceOwnership",
+        "constant": false,
+        "payable": false,
+        "gas": 29000000,
+        "inputs": [],
+        "outputs": []
+    },
+    {
+        "type": "function",
         "name": "setAnswererSettings",
         "constant": false,
         "payable": false,
+        "gas": 29000000,
         "inputs": [
             {
                 "type": "uint256",
@@ -332,6 +405,20 @@
             {
                 "type": "string",
                 "name": "interests"
+            }
+        ],
+        "outputs": []
+    },
+    {
+        "type": "function",
+        "name": "transferOwnership",
+        "constant": false,
+        "payable": false,
+        "gas": 29000000,
+        "inputs": [
+            {
+                "type": "address",
+                "name": "newOwner"
             }
         ],
         "outputs": []

@@ -7,6 +7,14 @@
             "0xd77cffca19aec21aca9f0e38743740efd548b2a4"
         ]
     },
+    "137": {
+        "QuestionAndAnswer": [
+            "0xbE4F9a902C8DA1731A9E984C519b46AD1cBD9d15"
+        ],
+        "USDC_ERC20": [
+            "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"
+        ]
+    },
     "31337": {
         "QuestionAndAnswer": [
             "0x5FbDB2315678afecb367f032d93F642f64180aa3",

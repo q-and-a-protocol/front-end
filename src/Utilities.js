@@ -1,22 +1,17 @@
-import { Link as RouterLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { usePrepareContractWrite, useContractWrite, useNetwork } from 'wagmi';
-import { InjectedConnector } from 'wagmi/connectors/injected';
-import * as ethers from 'ethers';
-import ExampleERC20ABI from './constants/ExampleERC20.json';
+import USDC_ERC20_ABI from './constants/USDC_ERC20.json';
 import networkMapping from './constants/networkMapping.json';
 
 export function Utilities() {
   const [spenderAddress, setSpenderAddress] = useState('');
   const [amount, setAmount] = useState(0);
-  const {
-    chain: { id: chainId },
-  } = useNetwork();
-  const ExampleERC20Address = networkMapping[chainId]?.ExampleERC20[0];
+  const { chain } = useNetwork();
+  const USDC_ERC20_Address = networkMapping[chain?.id || 137]?.USDC_ERC20[0];
 
   const { config } = usePrepareContractWrite({
-    addressOrName: ExampleERC20Address,
-    contractInterface: ExampleERC20ABI,
+    addressOrName: USDC_ERC20_Address,
+    contractInterface: USDC_ERC20_ABI,
     functionName: 'myMint',
   });
   const { write } = useContractWrite(config);

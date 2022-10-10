@@ -22,8 +22,8 @@ const apolloClient = new ApolloClient({
 });
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [chain.polygonMumbai],
-  // chain.polygon,
+  [chain.polygon],
+  // chain.polygonMumbai
   [alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_API_KEY }), publicProvider()]
 );
 

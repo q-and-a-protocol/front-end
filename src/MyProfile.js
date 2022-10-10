@@ -10,7 +10,7 @@ export function MyProfile() {
   const [interests, setInterests] = useState('');
   const [withdrawableAmount, setWithdrawableAmount] = useState(0);
   const { chain } = useNetwork();
-  const QuestionAndAnswerAddress = networkMapping[chain?.id || 80001]?.QuestionAndAnswer[0];
+  const QuestionAndAnswerAddress = networkMapping[chain?.id || 137]?.QuestionAndAnswer[0];
 
   function updateBounty(e) {
     setBounty(e.target.value);
