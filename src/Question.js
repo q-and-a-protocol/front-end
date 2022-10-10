@@ -14,6 +14,16 @@ export function Question() {
   const { chain } = useNetwork();
   const QuestionAndAnswerAddress = networkMapping[chain?.id || 80001]?.QuestionAndAnswer[0];
 
+  const whenQuestioner =
+    myAddress &&
+    questioner &&
+    ethers.utils.getAddress(myAddress) == ethers.utils.getAddress(questioner);
+
+  const whenAnswerer =
+    myAddress &&
+    answerer &&
+    ethers.utils.getAddress(myAddress) == ethers.utils.getAddress(answerer);
+
   const { data: newData } = useContractRead({
     addressOrName: QuestionAndAnswerAddress,
     contractInterface: QuestionAndAnswerABI,
@@ -22,6 +32,7 @@ export function Question() {
   });
 
   useEffect(() => {
+    console.log(newData);
     if (newData) {
       setQuestionData({
         question: newData[0],
@@ -104,56 +115,64 @@ export function Question() {
                     <p>{questionData ? questionData.question : 'Loading...'}</p>
                   </div>
 
-                  {myAddress &&
+                  {/* myAddress &&
                   answerer &&
-                  ethers.utils.getAddress(myAddress) == ethers.utils.getAddress(answerer) ? (
-                    <div className='sm:col-span-6'>
-                      <label htmlFor='answer' className='block text-md font-medium text-gray-700'>
-                        Answer
-                      </label>
-                      <div className='mt-1'>
-                        {questionData?.answered ? (
-                          <p>{questionData.answer}</p>
-                        ) : (
-                          <textarea
-                            id='answer'
-                            name='answer'
-                            value={answer}
-                            onChange={(e) => setAnswer(e.target.value)}
-                            rows={3}
-                            className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                          />
-                        )}
-                      </div>
-                      {questionData?.answered ? null : (
-                        <p className='mt-2 text-sm text-gray-500'>
-                          Write a few sentences with your answer and then submit below.
-                        </p>
+                  ethers.utils.getAddress(myAddress) == ethers.utils.getAddress(answerer) */}
+                  {/*
+                  When questioner:
+                    has been answered (show answer)
+                    has not been answered (show text saying not yet answered in red) and cancel button
+                  When answerer:
+                    has been answered (show answer)
+                    has not been answered (show textbox and answer button)
+                   */}
+                  <div className='sm:col-span-6'>
+                    <label htmlFor='answer' className='block text-md font-medium text-gray-700'>
+                      Answer
+                    </label>
+                    <div className='mt-1'>
+                      {questionData?.answered ? (
+                        <p>{questionData.answer}</p>
+                      ) : whenQuestioner ? (
+                        <div className='text-gray-700 text-lg font-light bg-slate-100 p-3 rounded-md text-center'>
+                          Your question has not been answered yet. Please wait or ask again with a
+                          higher bounty!
+                        </div>
+                      ) : (
+                        <textarea
+                          id='answer'
+                          name='answer'
+                          value={answer}
+                          onChange={(e) => setAnswer(e.target.value)}
+                          rows={3}
+                          className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                        />
                       )}
                     </div>
-                  ) : null}
+                    {questionData?.answered || whenQuestioner ? null : (
+                      <p className='mt-2 text-sm text-gray-500'>
+                        Write a few sentences with your answer and then submit below.
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
 
             <div className='pt-5'>
               <div className='flex justify-end'>
-                {(myAddress &&
-                  answerer &&
-                  ethers.utils.getAddress(myAddress) != ethers.utils.getAddress(answerer)) ||
-                questionData?.answered ? null : (
+                {whenAnswerer && questionData?.answered === false ? (
                   <button
                     type='submit'
                     className='ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
                   >
                     Answer Question
                   </button>
-                )}
+                ) : null}
               </div>
+              {/* when questioner: not answered and not expired */}
               <div className='flex justify-end'>
-                {myAddress &&
-                questioner &&
-                ethers.utils.getAddress(myAddress) == ethers.utils.getAddress(questioner) &&
+                {whenQuestioner &&
                 questionData?.answered === false &&
                 questionData?.expired === false ? (
                   <button
