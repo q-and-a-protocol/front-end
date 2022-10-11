@@ -92,7 +92,7 @@ export function MyProfile() {
                             $
                           </span>
                           <input
-                            value={Number(bounty)}
+                            value={Number(bounty).toFixed(2)}
                             onChange={updateBounty}
                             type='number'
                             name='company-website'
@@ -166,7 +166,7 @@ export function MyProfile() {
                         </label>
                       </div>
                       <p className='mt-2 col-span-3 text-md text-green-600'>
-                        ${Number(withdrawableAmount)}
+                        ${Number(withdrawableAmount).toFixed(2)}
                       </p>
                       <p className='mt-2 col-span-3 text-sm text-gray-500'>
                         This is money that has been collected from answering questions. You can

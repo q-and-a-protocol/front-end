@@ -93,7 +93,7 @@ export function Header() {
                 matchHelp ? matchStyle : ''
               }`}
             >
-              Help!
+              Help
             </NavLink>
           </Popover.Group>
           <div className='hidden items-center justify-end md:flex md:flex-1 lg:w-0'>
