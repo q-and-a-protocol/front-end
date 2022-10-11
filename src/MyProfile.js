@@ -43,7 +43,7 @@ export function MyProfile() {
 
   useEffect(() => {
     if (newData) {
-      setBounty(ethers.utils.formatUnits(newData.priceMinimum.toString(), USDC_DECIMALS));
+      setBounty(Number(ethers.utils.formatUnits(newData.priceMinimum.toString(), USDC_DECIMALS)));
       setInterests(newData.interests);
       setWithdrawableAmount(
         ethers.utils.formatUnits(newData.withdrawableAmount.toString(), USDC_DECIMALS)
@@ -92,7 +92,7 @@ export function MyProfile() {
                             $
                           </span>
                           <input
-                            value={Number(bounty).toFixed(2)}
+                            value={Number(bounty)}
                             onChange={updateBounty}
                             type='number'
                             name='company-website'
