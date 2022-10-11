@@ -1,13 +1,12 @@
-import { useAccount } from 'wagmi';
 import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { useEffect } from 'react';
 import * as React from 'react';
 import * as ethers from 'ethers';
-import { LensApolloClient, GET_DEFAULT_PROFILE } from './api/api';
 import { DisplayName } from './components/DisplayName';
 import { USDC_DECIMALS } from './constants/misc';
+import { GET_ALL_USERS, GET_ALL_QUESTIONS } from './api/api';
 import {
   CheckIcon,
   ChatBubbleLeftRightIcon,
@@ -18,34 +17,6 @@ import Tooltip from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 import { tooltipClasses } from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-
-const GET_ALL_QUESTIONS = gql`
-  query GetNewsfeedEvents {
-    newsfeedEvents {
-      id
-      questioner
-      answerer
-      questionId
-      bounty
-      date
-      answered
-      expiryDate
-      expired
-    }
-  }
-`;
-
-const GET_ALL_USERS = gql`
-  {
-    users {
-      id
-      address
-      hasAsked
-      hasAnswered
-      lastActivityDate
-    }
-  }
-`;
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -75,18 +46,12 @@ const HtmlTooltip = styled(({ className, ...props }) => (
 }));
 
 export function Home() {
-  const { address: myAddress } = useAccount();
   const [inputAddress, setInputAddress] = useState('');
   const { data: allQuestions, startPolling } = useQuery(GET_ALL_QUESTIONS);
   const { data: allUsers } = useQuery(GET_ALL_USERS);
-  const { data: profile } = useQuery(GET_DEFAULT_PROFILE, {
-    client: LensApolloClient,
-    variables: { address: myAddress },
-  });
 
   const [timeline, setTimeline] = useState([]);
   const [userMapping, setUserMapping] = useState({});
-  const [count, setCount] = useState({});
 
   const recommendedUser1 = '0x27f940eb8fa6740e38a20214592cece329bde8df';
   const recommendedUser2 = '0x8c79ccb572d5dcd96af6734ba1e5019d98fcafc4';
@@ -139,52 +104,6 @@ export function Home() {
   }, [allQuestions, userMapping]);
 
   useEffect(() => {
-    if (!allQuestions || !allQuestions.newsfeedEvents) return;
-    else {
-      allQuestions.newsfeedEvents.forEach((e) => {
-        setCount((prevState) => {
-          if (!prevState[e.questioner]) {
-            return {
-              ...prevState,
-              [e.questioner]: {
-                questionCount: 1,
-                answerCount: 0,
-              },
-            };
-          } else {
-            return {
-              ...prevState,
-              [e.questioner]: {
-                ...prevState[e.questioner],
-                questionCount: prevState[e.questioner].questionCount + 1,
-              },
-            };
-          }
-        });
-        setCount((prevState) => {
-          if (!prevState[e.answerer]) {
-            return {
-              ...prevState,
-              [e.answerer]: {
-                questionCount: 0,
-                answerCount: e.answered ? 1 : 0,
-              },
-            };
-          } else {
-            return {
-              ...prevState,
-              [e.answerer]: {
-                ...prevState[e.answerer],
-                answerCount: prevState[e.answerer].answerCount + (e.answered ? 1 : 0),
-              },
-            };
-          }
-        });
-      });
-    }
-  }, [allQuestions]);
-
-  useEffect(() => {
     if (!allUsers) setUserMapping({});
     else if (!allUsers.users) setUserMapping({});
     else {
@@ -235,10 +154,10 @@ export function Home() {
                   <React.Fragment>
                     <Typography color='inherit'>Power User: Yes</Typography>
                     <Typography color='inherit'>
-                      Asked: {count[recommendedUser1]?.questionCount} Questions
+                      Asked: {userMapping[recommendedUser1]?.numberOfQuestionsAsked} Questions
                     </Typography>
                     <Typography color='inherit'>
-                      Answered: {count[recommendedUser1]?.answerCount} Questions
+                      Answered: {userMapping[recommendedUser1]?.numberOfQuestionsAnswered} Questions
                     </Typography>
                     <br />
                     What does all of this mean? Click their display name for an explanation and to
@@ -264,10 +183,10 @@ export function Home() {
                   <React.Fragment>
                     <Typography color='inherit'>Power User: Yes</Typography>
                     <Typography color='inherit'>
-                      Asked: {count[recommendedUser2]?.questionCount} Questions
+                      Asked: {userMapping[recommendedUser2]?.numberOfQuestionsAsked} Questions
                     </Typography>
                     <Typography color='inherit'>
-                      Answered: {count[recommendedUser2]?.answerCount} Questions
+                      Answered: {userMapping[recommendedUser2]?.numberOfQuestionsAnswered} Questions
                     </Typography>
                     <br />
                     What does all of this mean? Click their display name for an explanation and to
@@ -321,10 +240,12 @@ export function Home() {
                                   Power User: {event.sourceHasAskedAnswered ? 'Yes' : 'No'}
                                 </Typography>
                                 <Typography color='inherit'>
-                                  Asked: {count[event.source]?.questionCount} Questions
+                                  Asked: {userMapping[event.source]?.numberOfQuestionsAsked}{' '}
+                                  Questions
                                 </Typography>
                                 <Typography color='inherit'>
-                                  Answered: {count[event.source]?.answerCount} Questions
+                                  Answered: {userMapping[event.source]?.numberOfQuestionsAnswered}{' '}
+                                  Questions
                                 </Typography>
                                 <br />
                                 What does all of this mean? Click their display name for an
@@ -353,10 +274,12 @@ export function Home() {
                                   Power User: {event.targetHasAskedAnswered ? 'Yes' : 'No'}
                                 </Typography>
                                 <Typography color='inherit'>
-                                  Asked: {count[event.target]?.questionCount} Questions
+                                  Asked: {userMapping[event.target]?.numberOfQuestionsAsked}{' '}
+                                  Questions
                                 </Typography>
                                 <Typography color='inherit'>
-                                  Answered: {count[event.target]?.answerCount} Questions
+                                  Answered: {userMapping[event.target]?.numberOfQuestionsAnswered}{' '}
+                                  Questions
                                 </Typography>
                                 <br />
                                 What does all of this mean? Click their display name for an
