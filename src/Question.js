@@ -32,7 +32,6 @@ export function Question() {
   });
 
   useEffect(() => {
-    console.log(newData);
     if (newData) {
       setQuestionData({
         question: newData[0],

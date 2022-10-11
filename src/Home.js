@@ -138,7 +138,6 @@ export function Home() {
   }, [allQuestions, userMapping]);
 
   useEffect(() => {
-    console.log(allQuestions);
     if (!allQuestions || !allQuestions.newsfeedEvents) return;
     else {
       allQuestions.newsfeedEvents.forEach((e) => {
@@ -195,12 +194,6 @@ export function Home() {
       setUserMapping(mapping);
     }
   }, [allUsers]);
-
-  useEffect(() => {
-    if (profile?.defaultProfile) {
-      console.log(profile.defaultProfile.handle);
-    }
-  }, [profile]);
 
   return (
     <div className='bg-white sm:rounded-lg '>

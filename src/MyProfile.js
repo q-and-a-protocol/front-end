@@ -25,7 +25,6 @@ export function MyProfile() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log([ethers.utils.parseUnits(bounty).toString(), interests]);
     write?.({
       recklesslySetUnpreparedArgs: [ethers.utils.parseUnits(bounty).toString(), interests],
     });
@@ -39,7 +38,6 @@ export function MyProfile() {
   });
 
   useEffect(() => {
-    console.log(newData);
     if (newData) {
       setBounty(ethers.utils.formatEther(newData.priceMinimum.toString()));
       setInterests(newData.interests);
