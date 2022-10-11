@@ -1,5 +1,3 @@
-import { Link as RouterLink } from 'react-router-dom';
-
 export function Help() {
   return (
     <div className='relative overflow-hidden bg-white py-16'>
@@ -108,53 +106,29 @@ export function Help() {
           </p> */}
         </div>
         <div className='prose prose-lg prose-indigo mx-auto mt-6 text-gray-500'>
-          <h2>Video 1: How to connect</h2>
-          <p>
-            Faucibus commodo massa rhoncus, volutpat. <strong>Dignissim</strong> sed{' '}
-            <strong>eget risus enim</strong>. Mattis mauris semper sed amet vitae sed turpis id. Id
-            dolor praesent donec est. Odio penatibus risus viverra tellus varius sit neque erat
-            velit. Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim.{' '}
-            <a href='#'>Mattis mauris semper</a> sed amet vitae sed turpis id.
-          </p>
-          <ul role='list'>
-            <li>Quis elit egestas venenatis mattis dignissim.</li>
-            <li>Cras cras lobortis vitae vivamus ultricies facilisis tempus.</li>
-            <li>Orci in sit morbi dignissim metus diam arcu pretium.</li>
-          </ul>
-          <p>
-            Quis semper vulputate aliquam venenatis egestas sagittis quisque orci. Donec commodo sit
-            viverra aliquam porttitor ultrices gravida eu. Tincidunt leo, elementum mattis elementum
-            ut nisl, justo, amet, mattis. Nunc purus, diam commodo tincidunt turpis. Amet, duis sed
-            elit interdum dignissim.
-          </p>
-          <h2>Video 2: Ask a question</h2>
-          <p>
+          <h2>Set up a Crypto/Web3 wallet</h2>
+          <div className='w-full flex justify-center'>
+            <iframe
+              width='560'
+              height='315'
+              src='https://www.youtube.com/embed/GNPz-Dv5BjM'
+              title='YouTube video player'
+              frameBorder='0'
+              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+              allowFullScreen
+            ></iframe>
+          </div>
+          <h2>Connect your wallet</h2>
+          <h2>Ask a question</h2>
+          <h2>Update your profile</h2>
+          <h2>Answer a question</h2>
+          <h2>Withdraw your earnings</h2>
+          {/* <p>
             Id orci tellus laoreet id ac. Dolor, aenean leo, ac etiam consequat in. Convallis arcu
             ipsum urna nibh. Pharetra, euismod vitae interdum mauris enim, consequat vulputate nibh.
             Maecenas pellentesque id sed tellus mauris, ultrices mauris. Tincidunt enim cursus
             ridiculus mi. Pellentesque nam sed nullam sed diam turpis ipsum eu a sed convallis diam.
-          </p>
-          <blockquote>
-            <p>
-              Sagittis scelerisque nulla cursus in enim consectetur quam. Dictum urna sed
-              consectetur neque tristique pellentesque. Blandit amet, sed aenean erat arcu morbi.
-            </p>
-          </blockquote>
-          <p>
-            Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim. Mattis mauris
-            semper sed amet vitae sed turpis id. Id dolor praesent donec est. Odio penatibus risus
-            viverra tellus varius sit neque erat velit.
-          </p>
-          <figure>
-            <img
-              className='w-full rounded-lg'
-              src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&w=1310&h=873&q=80&facepad=3'
-              alt=''
-              width={1310}
-              height={873}
-            />
-            <figcaption>Sagittis scelerisque nulla cursus in enim consectetur quam.</figcaption>
-          </figure>
+          </p> */}
         </div>
       </div>
     </div>
