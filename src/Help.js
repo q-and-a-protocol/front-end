@@ -132,9 +132,57 @@ export function Help() {
             ></iframe>
           </div>
           <h2>Ask a question</h2>
+          <div className='w-full flex justify-center'>
+            <iframe
+              width='560'
+              height='315'
+              src='https://www.loom.com/embed/1a5b6653ba4c431c97565e7676ed6c16'
+              title='Ask a question'
+              frameBorder='0'
+              webkitallowfullscreen='true'
+              mozallowfullscreen='true'
+              allowFullScreen
+            ></iframe>
+          </div>
           <h2>Update your profile</h2>
+          <div className='w-full flex justify-center'>
+            <iframe
+              width='560'
+              height='315'
+              src='https://www.loom.com/embed/00cda100ea71482b9f1c561ee54a23e4'
+              title='Update your profile'
+              frameBorder='0'
+              webkitallowfullscreen='true'
+              mozallowfullscreen='true'
+              allowFullScreen
+            ></iframe>
+          </div>
           <h2>Answer a question</h2>
+          <div className='w-full flex justify-center'>
+            <iframe
+              width='560'
+              height='315'
+              src='https://www.loom.com/embed/dabe68b18f8940039ea8a7bec993392c'
+              title='Answer a question'
+              frameBorder='0'
+              webkitallowfullscreen='true'
+              mozallowfullscreen='true'
+              allowFullScreen
+            ></iframe>
+          </div>
           <h2>Withdraw your earnings</h2>
+          <div className='w-full flex justify-center'>
+            <iframe
+              width='560'
+              height='315'
+              src='https://www.loom.com/embed/626f0a27acbb4515b36a731134e9b7b5'
+              title='Withdraw your earnings'
+              frameBorder='0'
+              webkitallowfullscreen='true'
+              mozallowfullscreen='true'
+              allowFullScreen
+            ></iframe>
+          </div>
           {/* <p>
             Id orci tellus laoreet id ac. Dolor, aenean leo, ac etiam consequat in. Convallis arcu
             ipsum urna nibh. Pharetra, euismod vitae interdum mauris enim, consequat vulputate nibh.
