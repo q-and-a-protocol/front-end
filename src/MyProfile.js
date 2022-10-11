@@ -25,6 +25,7 @@ export function MyProfile() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    console.log([ethers.utils.parseUnits(bounty).toString(), interests]);
     write?.({
       recklesslySetUnpreparedArgs: [ethers.utils.parseUnits(bounty).toString(), interests],
     });
@@ -38,6 +39,7 @@ export function MyProfile() {
   });
 
   useEffect(() => {
+    console.log(newData);
     if (newData) {
       setBounty(ethers.utils.formatEther(newData.priceMinimum.toString()));
       setInterests(newData.interests);
@@ -86,7 +88,7 @@ export function MyProfile() {
                             $
                           </span>
                           <input
-                            value={Number(bounty).toFixed(2)}
+                            value={Number(bounty)}
                             onChange={updateBounty}
                             type='number'
                             name='company-website'
@@ -160,7 +162,7 @@ export function MyProfile() {
                         </label>
                       </div>
                       <p className='mt-2 col-span-3 text-md text-green-600'>
-                        ${Number(withdrawableAmount).toFixed(2)}
+                        ${Number(withdrawableAmount)}
                       </p>
                       <p className='mt-2 col-span-3 text-sm text-gray-500'>
                         This is money that has been collected from answering questions. You can

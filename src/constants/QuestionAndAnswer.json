@@ -1,426 +1,460 @@
 [
     {
-        "type": "constructor",
-        "payable": false,
         "inputs": [
             {
-                "type": "address",
-                "name": "USDCAddress"
-            }
-        ]
-    },
-    {
-        "type": "error",
-        "name": "QuestionAndAnswer__AllowanceTooLow",
-        "inputs": []
-    },
-    {
-        "type": "error",
-        "name": "QuestionAndAnswer__BountyTooLow",
-        "inputs": []
-    },
-    {
-        "type": "error",
-        "name": "QuestionAndAnswer__CannotCancelQuestion",
-        "inputs": []
-    },
-    {
-        "type": "error",
-        "name": "QuestionAndAnswer__InvalidExpiry",
-        "inputs": []
-    },
-    {
-        "type": "error",
-        "name": "QuestionAndAnswer__InvalidPriceMinimum",
-        "inputs": []
-    },
-    {
-        "type": "error",
-        "name": "QuestionAndAnswer__NothingToWithdraw",
-        "inputs": []
-    },
-    {
-        "type": "error",
-        "name": "QuestionAndAnswer__QuestionAlreadyAnswered",
-        "inputs": []
-    },
-    {
-        "type": "error",
-        "name": "QuestionAndAnswer__QuestionDoesNotExist",
-        "inputs": []
-    },
-    {
-        "type": "error",
-        "name": "QuestionAndAnswer__QuestionHasExpired",
-        "inputs": []
-    },
-    {
-        "type": "event",
-        "anonymous": false,
-        "name": "EmergencyWithdraw",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "withdrawalBy",
-                "indexed": true
-            },
-            {
-                "type": "uint256",
-                "name": "amount",
-                "indexed": true
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "anonymous": false,
-        "name": "OwnershipTransferred",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "previousOwner",
-                "indexed": true
-            },
-            {
-                "type": "address",
-                "name": "newOwner",
-                "indexed": true
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "anonymous": false,
-        "name": "QuestionAnswered",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "questioner",
-                "indexed": true
-            },
-            {
-                "type": "address",
-                "name": "answerer",
-                "indexed": true
-            },
-            {
-                "type": "uint256",
-                "name": "questionId",
-                "indexed": true
-            },
-            {
-                "type": "uint256",
-                "name": "bounty",
-                "indexed": false
-            },
-            {
-                "type": "uint256",
-                "name": "date",
-                "indexed": false
-            },
-            {
-                "type": "string",
-                "name": "answer",
-                "indexed": false
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "anonymous": false,
-        "name": "QuestionAsked",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "questioner",
-                "indexed": true
-            },
-            {
-                "type": "address",
-                "name": "answerer",
-                "indexed": true
-            },
-            {
-                "type": "uint256",
-                "name": "questionId",
-                "indexed": true
-            },
-            {
-                "type": "uint256",
-                "name": "bounty",
-                "indexed": false
-            },
-            {
-                "type": "uint256",
-                "name": "date",
-                "indexed": false
-            },
-            {
-                "type": "string",
-                "name": "question",
-                "indexed": false
-            },
-            {
-                "type": "uint256",
-                "name": "expiryDate",
-                "indexed": false
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "anonymous": false,
-        "name": "QuestionCanceled",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "questioner",
-                "indexed": true
-            },
-            {
-                "type": "address",
-                "name": "answerer",
-                "indexed": true
-            },
-            {
-                "type": "uint256",
-                "name": "questionId",
-                "indexed": true
-            },
-            {
-                "type": "uint256",
-                "name": "date",
-                "indexed": false
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "anonymous": false,
-        "name": "Withdraw",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "withdrawalBy",
-                "indexed": true
-            },
-            {
-                "type": "uint256",
-                "name": "amount",
-                "indexed": true
-            }
-        ]
-    },
-    {
-        "type": "function",
-        "name": "answerQuestion",
-        "constant": false,
-        "payable": false,
-        "gas": 29000000,
-        "inputs": [
-            {
-                "type": "address",
-                "name": "questioner"
-            },
-            {
-                "type": "uint256",
-                "name": "questionId"
-            },
-            {
-                "type": "string",
-                "name": "answer"
-            }
-        ],
-        "outputs": []
-    },
-    {
-        "type": "function",
-        "name": "answererToSettings",
-        "constant": true,
-        "stateMutability": "view",
-        "payable": false,
-        "gas": 29000000,
-        "inputs": [
-            {
+                "internalType": "address",
+                "name": "USDCAddress",
                 "type": "address"
             }
         ],
-        "outputs": [
-            {
-                "type": "bool",
-                "name": "populated"
-            },
-            {
-                "type": "uint256",
-                "name": "priceMinimum"
-            },
-            {
-                "type": "uint256",
-                "name": "withdrawableAmount"
-            },
-            {
-                "type": "string",
-                "name": "interests"
-            }
-        ]
+        "stateMutability": "nonpayable",
+        "type": "constructor"
     },
     {
-        "type": "function",
-        "name": "answererWithdraw",
-        "constant": false,
-        "payable": false,
-        "gas": 29000000,
         "inputs": [],
-        "outputs": []
+        "name": "QuestionAndAnswer__AllowanceTooLow",
+        "type": "error"
     },
     {
-        "type": "function",
-        "name": "askQuestion",
-        "constant": false,
-        "payable": false,
-        "gas": 29000000,
-        "inputs": [
-            {
-                "type": "string",
-                "name": "question"
-            },
-            {
-                "type": "address",
-                "name": "answerer"
-            },
-            {
-                "type": "uint256",
-                "name": "bounty"
-            },
-            {
-                "type": "uint256",
-                "name": "expiryDate"
-            }
-        ],
-        "outputs": []
-    },
-    {
-        "type": "function",
-        "name": "cancelQuestion",
-        "constant": false,
-        "payable": false,
-        "gas": 29000000,
-        "inputs": [
-            {
-                "type": "address",
-                "name": "answerer"
-            },
-            {
-                "type": "uint256",
-                "name": "questionId"
-            }
-        ],
-        "outputs": []
-    },
-    {
-        "type": "function",
-        "name": "emergencyWithdraw",
-        "constant": false,
-        "payable": false,
-        "gas": 29000000,
         "inputs": [],
-        "outputs": []
+        "name": "QuestionAndAnswer__BountyTooLow",
+        "type": "error"
     },
     {
-        "type": "function",
-        "name": "getQuestionerToAnswererToQAs",
-        "constant": true,
-        "stateMutability": "view",
-        "payable": false,
-        "gas": 29000000,
+        "inputs": [],
+        "name": "QuestionAndAnswer__CannotCancelQuestion",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "QuestionAndAnswer__InvalidExpiry",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "QuestionAndAnswer__InvalidPriceMinimum",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "QuestionAndAnswer__NothingToWithdraw",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "QuestionAndAnswer__QuestionAlreadyAnswered",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "QuestionAndAnswer__QuestionDoesNotExist",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "QuestionAndAnswer__QuestionHasExpired",
+        "type": "error"
+    },
+    {
+        "anonymous": false,
         "inputs": [
             {
-                "type": "address",
-                "name": "questioner"
+                "indexed": true,
+                "internalType": "address",
+                "name": "withdrawalBy",
+                "type": "address"
             },
             {
-                "type": "address",
-                "name": "answerer"
-            },
-            {
-                "type": "uint256",
-                "name": "index"
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
             }
         ],
-        "outputs": [
+        "name": "EmergencyWithdraw",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
             {
+                "indexed": true,
+                "internalType": "address",
+                "name": "previousOwner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "questioner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "answerer",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "questionId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "bounty",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "date",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "answer",
+                "type": "string"
+            }
+        ],
+        "name": "QuestionAnswered",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "questioner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "answerer",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "questionId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "bounty",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "date",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "question",
                 "type": "string"
             },
             {
-                "type": "string"
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "expiryDate",
+                "type": "uint256"
+            }
+        ],
+        "name": "QuestionAsked",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "questioner",
+                "type": "address"
             },
             {
+                "indexed": true,
+                "internalType": "address",
+                "name": "answerer",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "questionId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "date",
+                "type": "uint256"
+            }
+        ],
+        "name": "QuestionCanceled",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "withdrawalBy",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "Withdraw",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "questioner",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "questionId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "answer",
+                "type": "string"
+            }
+        ],
+        "name": "answerQuestion",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "answererToSettings",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "populated",
                 "type": "bool"
             },
             {
+                "internalType": "uint256",
+                "name": "priceMinimum",
                 "type": "uint256"
             },
             {
+                "internalType": "uint256",
+                "name": "withdrawableAmount",
                 "type": "uint256"
             },
             {
-                "type": "uint256"
+                "internalType": "string",
+                "name": "interests",
+                "type": "string"
             }
-        ]
+        ],
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
-        "name": "owner",
-        "constant": true,
-        "stateMutability": "view",
-        "payable": false,
-        "gas": 29000000,
         "inputs": [],
+        "name": "answererWithdraw",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "question",
+                "type": "string"
+            },
+            {
+                "internalType": "address",
+                "name": "answerer",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "bounty",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "expiryDate",
+                "type": "uint256"
+            }
+        ],
+        "name": "askQuestion",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "answerer",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "questionId",
+                "type": "uint256"
+            }
+        ],
+        "name": "cancelQuestion",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "emergencyWithdraw",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "questioner",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "answerer",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "index",
+                "type": "uint256"
+            }
+        ],
+        "name": "getQuestionerToAnswererToQAs",
         "outputs": [
             {
-                "type": "address"
-            }
-        ]
-    },
-    {
-        "type": "function",
-        "name": "renounceOwnership",
-        "constant": false,
-        "payable": false,
-        "gas": 29000000,
-        "inputs": [],
-        "outputs": []
-    },
-    {
-        "type": "function",
-        "name": "setAnswererSettings",
-        "constant": false,
-        "payable": false,
-        "gas": 29000000,
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "priceMinimum"
+                "internalType": "string",
+                "name": "",
+                "type": "string"
             },
             {
-                "type": "string",
-                "name": "interests"
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            },
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
             }
         ],
-        "outputs": []
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
-        "name": "transferOwnership",
-        "constant": false,
-        "payable": false,
-        "gas": 29000000,
-        "inputs": [
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
             {
-                "type": "address",
-                "name": "newOwner"
+                "internalType": "address",
+                "name": "",
+                "type": "address"
             }
         ],
-        "outputs": []
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "renounceOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "priceMinimum",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "interests",
+                "type": "string"
+            }
+        ],
+        "name": "setAnswererSettings",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
     }
 ]
