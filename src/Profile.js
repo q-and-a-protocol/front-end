@@ -2,31 +2,15 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useContractWrite, useNetwork, useContractRead, useAccount } from 'wagmi';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import QuestionAndAnswerABI from './constants/QuestionAndAnswer.json';
 import USDC_ERC20_ABI from './constants/USDC_ERC20.json';
 import * as ethers from 'ethers';
-import { LensApolloClient, GET_DEFAULT_PROFILE } from './api/api';
+import { LensApolloClient, GET_DEFAULT_PROFILE, GET_ALL_QUESTIONS, GET_USER } from './api/api';
 import { DisplayName } from './components/DisplayName';
 import { USDC_DECIMALS } from './constants/misc';
 import networkMapping from './constants/networkMapping.json';
 import Tooltip from '@mui/material/Tooltip';
-
-const GET_ALL_QUESTIONS = gql`
-  {
-    newsfeedEvents {
-      id
-      questioner
-      answerer
-      questionId
-      bounty
-      date
-      answered
-      expiryDate
-      expired
-    }
-  }
-`;
 
 function convertExpiryDate(expiryString) {
   const splitExpiryString = expiryString.split(' ');
@@ -54,15 +38,21 @@ export function Profile() {
   const [interests, setInterests] = useState('');
   const [expiryDate, setExpiryDate] = useState('Never');
   const [approveAttempted, setApproveAttempted] = useState(false);
-  const { data: allQuestions } = useQuery(GET_ALL_QUESTIONS);
   const { chain } = useNetwork();
   const QuestionAndAnswerAddress = networkMapping[chain?.id || 137]?.QuestionAndAnswer[0];
   const USDC_ERC20_Address = networkMapping[chain?.id || 137]?.USDC_ERC20[0];
-  const [count, setCount] = useState({});
+
+  const { data: getUser, startPolling: startPollingGU } = useQuery(GET_USER, {
+    variables: { address: address },
+  });
   const { data: profile } = useQuery(GET_DEFAULT_PROFILE, {
     client: LensApolloClient,
     variables: { address: address },
   });
+
+  useEffect(() => {
+    startPollingGU(2000);
+  }, [startPollingGU]);
 
   const { write } = useContractWrite({
     mode: 'recklesslyUnprepared',
@@ -119,52 +109,6 @@ export function Profile() {
       ],
     });
   }
-
-  useEffect(() => {
-    if (!allQuestions || !allQuestions.newsfeedEvents) return;
-    else {
-      allQuestions.newsfeedEvents.forEach((e) => {
-        setCount((prevState) => {
-          if (!prevState[e.questioner]) {
-            return {
-              ...prevState,
-              [e.questioner]: {
-                questionCount: 1,
-                answerCount: 0,
-              },
-            };
-          } else {
-            return {
-              ...prevState,
-              [e.questioner]: {
-                ...prevState[e.questioner],
-                questionCount: prevState[e.questioner].questionCount + 1,
-              },
-            };
-          }
-        });
-        setCount((prevState) => {
-          if (!prevState[e.answerer]) {
-            return {
-              ...prevState,
-              [e.answerer]: {
-                questionCount: 0,
-                answerCount: e.answered ? 1 : 0,
-              },
-            };
-          } else {
-            return {
-              ...prevState,
-              [e.answerer]: {
-                ...prevState[e.answerer],
-                answerCount: prevState[e.answerer].answerCount + (e.answered ? 1 : 0),
-              },
-            };
-          }
-        });
-      });
-    }
-  }, [allQuestions]);
 
   return (
     <div className='mx-auto max-w-7xl px-8 pt-2'>
@@ -288,7 +232,7 @@ export function Profile() {
                           <div className='sm:col-span-1'>
                             <dt className='text-sm font-medium text-gray-500'>Questions Asked</dt>
                             <dd className='mt-1 text-sm text-gray-900'>
-                              {count[address]?.questionCount}
+                              {getUser?.users[0]?.numberOfQuestionsAsked}
                             </dd>
                           </div>
                           <div className='sm:col-span-1'>
@@ -296,7 +240,7 @@ export function Profile() {
                               Questions Answered
                             </dt>
                             <dd className='mt-1 text-sm text-gray-900'>
-                              {count[address]?.answerCount}
+                              {getUser?.users[0]?.numberOfQuestionsAnswered}
                             </dd>
                           </div>
                         </dl>

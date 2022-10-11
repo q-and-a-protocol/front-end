@@ -18,6 +18,20 @@ export const GET_DEFAULT_PROFILE = gql`
   }
 `;
 
+export const GET_USER = gql`
+  query GetUser($address: Bytes!) {
+    users(where: { address: $address }) {
+      id
+      address
+      hasAsked
+      hasAnswered
+      lastActivityDate
+      numberOfQuestionsAsked
+      numberOfQuestionsAnswered
+    }
+  }
+`;
+
 export const GET_ALL_USERS = gql`
   query GetAllUsers {
     users {
