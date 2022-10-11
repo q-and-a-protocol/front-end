@@ -56,7 +56,6 @@ export function Question() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log([questioner, index, answer]);
     answerQuestion?.({
       recklesslySetUnpreparedArgs: [questioner, index, answer],
     });
