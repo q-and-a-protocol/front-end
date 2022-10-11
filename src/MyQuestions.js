@@ -4,6 +4,7 @@ import { useQuery, gql } from '@apollo/client';
 import { Link as RouterLink } from 'react-router-dom';
 import * as ethers from 'ethers';
 import { DisplayName } from './components/DisplayName';
+import { USDC_DECIMALS } from './constants/misc';
 import {
   CheckIcon,
   ChatBubbleLeftRightIcon,
@@ -284,7 +285,9 @@ export function MyQuestions() {
                                     <div className='text-green-600'>
                                       $
                                       {Number(
-                                        ethers.utils.formatUnits(event.bounty).toString()
+                                        ethers.utils
+                                          .formatUnits(event.bounty, USDC_DECIMALS)
+                                          .toString()
                                       ).toFixed(2)}
                                     </div>
                                     <time>{event.date}</time>
@@ -385,7 +388,9 @@ export function MyQuestions() {
                                     <div className='text-green-600'>
                                       $
                                       {Number(
-                                        ethers.utils.formatUnits(event.bounty).toString()
+                                        ethers.utils
+                                          .formatUnits(event.bounty, USDC_DECIMALS)
+                                          .toString()
                                       ).toFixed(2)}
                                     </div>
                                     <time>{event.date}</time>

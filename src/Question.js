@@ -5,6 +5,7 @@ import QuestionAndAnswerABI from './constants/QuestionAndAnswer.json';
 import * as ethers from 'ethers';
 import networkMapping from './constants/networkMapping.json';
 import { DisplayName } from './components/DisplayName';
+import { USDC_DECIMALS } from './constants/misc';
 
 export function Question() {
   const { address: myAddress, isDisconnected } = useAccount();
@@ -55,6 +56,7 @@ export function Question() {
 
   function handleSubmit(event) {
     event.preventDefault();
+    console.log([questioner, index, answer]);
     answerQuestion?.({
       recklesslySetUnpreparedArgs: [questioner, index, answer],
     });
@@ -100,7 +102,9 @@ export function Question() {
                     <span className='text-green-600'>
                       $
                       {questionData
-                        ? Number(ethers.utils.formatEther(questionData.bounty.toString()))
+                        ? Number(
+                            ethers.utils.formatUnits(questionData.bounty.toString(), USDC_DECIMALS)
+                          )
                         : 'Loading...'}
                     </span>
                   </p>

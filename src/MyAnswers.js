@@ -4,6 +4,7 @@ import { useQuery, gql } from '@apollo/client';
 import { Link as RouterLink, Router } from 'react-router-dom';
 import * as ethers from 'ethers';
 import { DisplayName } from './components/DisplayName';
+import { USDC_DECIMALS } from './constants/misc';
 import { CheckIcon, ChatBubbleLeftRightIcon, CheckBadgeIcon } from '@heroicons/react/20/solid';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -263,7 +264,12 @@ export function MyAnswers() {
                                   </div>
                                   <div className='whitespace-nowrap text-right text-sm text-gray-500'>
                                     <div className='text-green-600'>
-                                      ${Number(ethers.utils.formatUnits(event.bounty).toString())}
+                                      $
+                                      {Number(
+                                        ethers.utils
+                                          .formatUnits(event.bounty, USDC_DECIMALS)
+                                          .toString()
+                                      )}
                                     </div>
                                     <time>{event.date}</time>
                                   </div>
@@ -361,7 +367,12 @@ export function MyAnswers() {
                                   </div>
                                   <div className='whitespace-nowrap text-right text-sm text-gray-500'>
                                     <div className='text-green-600'>
-                                      ${Number(ethers.utils.formatUnits(event.bounty).toString())}
+                                      $
+                                      {Number(
+                                        ethers.utils
+                                          .formatUnits(event.bounty, USDC_DECIMALS)
+                                          .toString()
+                                      )}
                                     </div>
                                     <time>{event.date}</time>
                                   </div>

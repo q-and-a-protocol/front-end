@@ -7,6 +7,7 @@ import * as React from 'react';
 import * as ethers from 'ethers';
 import { LensApolloClient, GET_DEFAULT_PROFILE } from './api/api';
 import { DisplayName } from './components/DisplayName';
+import { USDC_DECIMALS } from './constants/misc';
 import {
   CheckIcon,
   ChatBubbleLeftRightIcon,
@@ -382,7 +383,10 @@ export function Home() {
                       </div>
                       <div className='whitespace-nowrap text-right text-sm text-gray-500'>
                         <div className='text-green-600'>
-                          ${Number(ethers.utils.formatUnits(event.bounty).toString()).toFixed(2)}
+                          $
+                          {Number(
+                            ethers.utils.formatUnits(event.bounty, USDC_DECIMALS).toString()
+                          ).toFixed(2)}
                         </div>
                         <time>{event.date}</time>
                       </div>

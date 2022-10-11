@@ -3,6 +3,7 @@ import { useAccount, useContractWrite, useContractRead, useNetwork } from 'wagmi
 import QuestionAndAnswerABI from './constants/QuestionAndAnswer.json';
 import * as ethers from 'ethers';
 import networkMapping from './constants/networkMapping.json';
+import { USDC_DECIMALS } from './constants/misc';
 
 export function MyProfile() {
   const { address, isDisconnected } = useAccount();
@@ -26,7 +27,10 @@ export function MyProfile() {
   async function handleSubmit(event) {
     event.preventDefault();
     write?.({
-      recklesslySetUnpreparedArgs: [ethers.utils.parseUnits(bounty).toString(), interests],
+      recklesslySetUnpreparedArgs: [
+        ethers.utils.parseUnits(bounty, USDC_DECIMALS).toString(),
+        interests,
+      ],
     });
   }
 
@@ -39,9 +43,11 @@ export function MyProfile() {
 
   useEffect(() => {
     if (newData) {
-      setBounty(ethers.utils.formatEther(newData.priceMinimum.toString()));
+      setBounty(ethers.utils.formatUnits(newData.priceMinimum.toString(), USDC_DECIMALS));
       setInterests(newData.interests);
-      setWithdrawableAmount(ethers.utils.formatEther(newData.withdrawableAmount.toString()));
+      setWithdrawableAmount(
+        ethers.utils.formatUnits(newData.withdrawableAmount.toString(), USDC_DECIMALS)
+      );
     }
   }, [newData]);
 

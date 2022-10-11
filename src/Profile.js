@@ -8,6 +8,7 @@ import USDC_ERC20_ABI from './constants/USDC_ERC20.json';
 import * as ethers from 'ethers';
 import { LensApolloClient, GET_DEFAULT_PROFILE } from './api/api';
 import { DisplayName } from './components/DisplayName';
+import { USDC_DECIMALS } from './constants/misc';
 import networkMapping from './constants/networkMapping.json';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -76,7 +77,7 @@ export function Profile() {
       recklesslySetUnpreparedArgs: [
         question,
         address,
-        ethers.utils.parseUnits(bounty).toString(),
+        ethers.utils.parseUnits(bounty, USDC_DECIMALS).toString(),
         convertExpiryDate(expiryDate),
       ],
     });
@@ -91,9 +92,9 @@ export function Profile() {
 
   useEffect(() => {
     if (newData) {
-      const formatted = Number(ethers.utils.formatEther(newData.priceMinimum.toString())).toFixed(
-        2
-      );
+      const formatted = Number(
+        ethers.utils.formatUnits(newData.priceMinimum.toString(), USDC_DECIMALS)
+      ).toFixed(2);
       setRecommendedBounty(formatted);
       setBounty(formatted.toString());
       setInterests(newData.interests);
@@ -114,7 +115,7 @@ export function Profile() {
     approveFunds?.({
       recklesslySetUnpreparedArgs: [
         QuestionAndAnswerAddress,
-        ethers.utils.parseUnits(bounty).toString(),
+        ethers.utils.parseUnits(bounty, USDC_DECIMALS).toString(),
       ],
     });
   }
