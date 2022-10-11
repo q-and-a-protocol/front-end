@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useAccount, useEnsName } from 'wagmi';
-import { useQuery, gql } from '@apollo/client';
+import { useAccount } from 'wagmi';
+import { useQuery } from '@apollo/client';
 import { Link as RouterLink } from 'react-router-dom';
 import * as ethers from 'ethers';
 import { DisplayName } from './components/DisplayName';
 import { USDC_DECIMALS } from './constants/misc';
+import {
+  GET_MY_QUESTIONS_WHEN_QUESTIONER,
+  GET_MY_QUESTIONS_WHEN_ANSWERER,
+  GET_ALL_USERS,
+} from './api/api';
 import {
   CheckIcon,
   ChatBubbleLeftRightIcon,
@@ -28,70 +33,40 @@ const isToday = (someDate) => {
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-const GET_MY_QUESTIONS_WHEN_ANSWERER = gql`
-  query GetMyQuestionsWhenAnswerer($address: Bytes!) {
-    newsfeedEvents(first: 20, where: { answerer: $address }) {
-      id
-      questioner
-      answerer
-      questionId
-      bounty
-      date
-      answered
-      question
-      answer
-      expiryDate
-      expired
-    }
-  }
-`;
-
-const GET_MY_QUESTIONS_WHEN_QUESTIONER = gql`
-  query GetMyQuestionsWhenQuestioner($address: Bytes!) {
-    newsfeedEvents(first: 20, where: { questioner: $address }) {
-      id
-      questioner
-      answerer
-      questionId
-      bounty
-      date
-      answered
-      question
-      answer
-      expiryDate
-      expired
-    }
-  }
-`;
-
-const GET_ALL_USERS = gql`
-  {
-    users {
-      id
-      address
-      hasAsked
-      hasAnswered
-      lastActivityDate
-    }
-  }
-`;
-
 export function MyQuestions() {
   const { address: myAddress } = useAccount();
   const [userMapping, setUserMapping] = useState({});
 
-  const { data: myQuestionsWhenAnswerer } = useQuery(GET_MY_QUESTIONS_WHEN_ANSWERER, {
-    variables: { address: myAddress },
-  });
+  const { data: myQuestionsWhenAnswerer, startPolling: startPollingGMQWA } = useQuery(
+    GET_MY_QUESTIONS_WHEN_ANSWERER,
+    {
+      variables: { address: myAddress },
+    }
+  );
 
-  const { data: myQuestionsWhenQuestioner } = useQuery(GET_MY_QUESTIONS_WHEN_QUESTIONER, {
-    variables: { address: myAddress },
-  });
+  const { data: myQuestionsWhenQuestioner, startPolling: startPollingGMQWQ } = useQuery(
+    GET_MY_QUESTIONS_WHEN_QUESTIONER,
+    {
+      variables: { address: myAddress },
+    }
+  );
 
-  const { data: allUsers } = useQuery(GET_ALL_USERS);
+  const { data: allUsers, startPolling: startPollingGAU } = useQuery(GET_ALL_USERS);
 
   const [questionsFeedWhenQuestioner, setQuestionsFeedWhenQuestioner] = useState([]);
   const [questionsFeedWhenAnswerer, setQuestionsFeedWhenAnswerer] = useState([]);
+
+  useEffect(() => {
+    startPollingGMQWA(1000);
+  }, [startPollingGMQWA]);
+
+  useEffect(() => {
+    startPollingGMQWQ(1000);
+  }, [startPollingGMQWQ]);
+
+  useEffect(() => {
+    startPollingGAU(1000);
+  }, [startPollingGAU]);
 
   useEffect(() => {
     if (!myQuestionsWhenAnswerer) setQuestionsFeedWhenAnswerer([]);

@@ -1,6 +1,6 @@
 import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { useEffect } from 'react';
 import * as React from 'react';
 import * as ethers from 'ethers';
@@ -47,8 +47,8 @@ const HtmlTooltip = styled(({ className, ...props }) => (
 
 export function Home() {
   const [inputAddress, setInputAddress] = useState('');
-  const { data: allQuestions, startPolling } = useQuery(GET_ALL_QUESTIONS);
-  const { data: allUsers } = useQuery(GET_ALL_USERS);
+  const { data: allQuestions, startPolling: startPollingGAQ } = useQuery(GET_ALL_QUESTIONS);
+  const { data: allUsers, startPolling: startPollingGAU } = useQuery(GET_ALL_USERS);
 
   const [timeline, setTimeline] = useState([]);
   const [userMapping, setUserMapping] = useState({});
@@ -57,8 +57,12 @@ export function Home() {
   const recommendedUser2 = '0x8c79ccb572d5dcd96af6734ba1e5019d98fcafc4';
 
   useEffect(() => {
-    startPolling(1000);
-  }, [startPolling]);
+    startPollingGAQ(1000);
+  }, [startPollingGAQ]);
+
+  useEffect(() => {
+    startPollingGAU(1000);
+  }, [startPollingGAU]);
 
   useEffect(() => {
     if (!allQuestions) {
