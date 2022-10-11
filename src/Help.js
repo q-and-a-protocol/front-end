@@ -112,13 +112,25 @@ export function Help() {
               width='560'
               height='315'
               src='https://www.youtube.com/embed/GNPz-Dv5BjM'
-              title='YouTube video player'
+              title='Set up a wallet'
               frameBorder='0'
               allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
               allowFullScreen
             ></iframe>
           </div>
           <h2>Connect your wallet</h2>
+          <div className='w-full flex justify-center'>
+            <iframe
+              width='560'
+              height='315'
+              src='https://www.loom.com/embed/33f3e7f7d36e4abc91468037dd944187'
+              title='Connect your wallet'
+              frameBorder='0'
+              webkitallowfullscreen='true'
+              mozallowfullscreen='true'
+              allowFullScreen
+            ></iframe>
+          </div>
           <h2>Ask a question</h2>
           <h2>Update your profile</h2>
           <h2>Answer a question</h2>
